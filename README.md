@@ -1,11 +1,5 @@
-# My Personal Project
-
-## A subtitle
-
-A *bulleted* list:
-- item 1
-- item 2
-- item 3
-
-An example of text with **bold** and *italic* fonts.  Note that the IntelliJ markdown previewer doesn't seem to render 
-the bold and italic fonts correctly but they will appear correctly on GitHub.
+# Chess Opening Database
+### Summary
+This is an application for chess players who want to keep track and expand of their opening repertoire for chess.
+As amateur chess player myself, I have trouble memorizing certain lines so this type of database would be helpful. 
+### User Stories    
