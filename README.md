@@ -4,4 +4,9 @@ This is an application for chess players who want to keep track and expand of th
 As amateur chess player myself, I have trouble memorizing certain lines so this type of database would be helpful. 
 This program would allow you to input openings, save them, and view all the openings you have saved from a
  user-friendly interface.
-### User Stories    
+### User Stories
+As a user, I want to be able to
+ - add openings to my opening database
+ - view all openings previously added
+ - delete openings
+ - export and import openings via PGN 
