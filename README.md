@@ -6,7 +6,8 @@ This program would allow you to input openings, save them, and view all the open
  user-friendly interface.
 ### User Stories
 As a user, I want to be able to
- - add openings to my opening database
- - view all openings previously added
+ - view all openings stored in the database
+ - add openings
+ - add alternative lines
  - delete openings
  - export and import openings via PGN 
