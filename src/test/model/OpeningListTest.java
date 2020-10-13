@@ -30,15 +30,17 @@ public class OpeningListTest {
     void testAddOpening() {
         assertFalse(test1.addOpening(new Move(1,true, 1, new Position(5, 2), new Position(5, 4))));
         assertTrue(test1.addOpening(new Move(1,true, 1, new Position(4, 2), new Position(4, 3))));
-        assertEquals(3,test1.length());
+        assertTrue(test1.addOpening(new Move(1,true, 2, new Position(5, 2), new Position(5, 4))));
+        assertEquals(4,test1.length());
     }
 
     @Test
     void testRemoveOpening() {
+        assertFalse(test1.removeOpening(1, new Position(4, 3)));
+        assertFalse(test1.removeOpening(3, new Position(5, 3)));
+
         assertTrue(test1.removeOpening(1, new Position(5, 4)));
         assertEquals(1, test1.length());
-
-        assertFalse(test1.removeOpening(1, new Position(4, 3)));
     }
 
     @Test

@@ -7,9 +7,9 @@ public class Position {
 
     // REQUIRES: col and row in the range [0, 7]
     // EFFECTS: creates position for given column and row
-    public Position(int col, int row) {
-        this.col = col;
+    public Position(int row, int col) {
         this.row = row;
+        this.col = col;
     }
 
     // REQUIRES: position p to not be null
@@ -19,16 +19,16 @@ public class Position {
         this.row = p.getRow();
     }
 
-    public int getCol() {
-        return col;
-    }
-
     public int getRow() {
         return row;
     }
 
+    public int getCol() {
+        return col;
+    }
+
     // EFFECTS: returns true if all parameters are equal with input p, false otherwise
     public boolean equals(Position p) {
-        return p != null && getCol() == p.getCol() && getRow() == p.getRow();
+        return p != null && getRow() == p.getRow() && getCol() == p.getCol();
     }
 }

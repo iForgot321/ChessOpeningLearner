@@ -3,25 +3,19 @@ package model;
 import model.board.Position;
 
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PositionTest {
-    Position pos;
+    Position pos = new Position(4, 5);
 
-    @BeforeEach
-    void runBefore() {
-        pos = new Position(4, 5);
+    @Test
+    void testGetRow() {
+        assertEquals(4, pos.getRow());
     }
 
     @Test
     void testGetCol() {
-        assertEquals(4, pos.getCol());
-    }
-
-    @Test
-    void testGetRow() {
-        assertEquals(5, pos.getRow());
+        assertEquals(5, pos.getCol());
     }
 
     @Test
