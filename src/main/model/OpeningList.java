@@ -5,7 +5,7 @@ import model.board.Position;
 import java.util.ArrayList;
 import java.util.List;
 
-// List of all openings in database
+// List of all openings stored
 public class OpeningList {
     private List<Move> openings;
 

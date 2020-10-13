@@ -7,10 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class OpeningListTest {
-    OpeningList test1 = new OpeningList();
+    OpeningList test1;
 
     @BeforeEach
     void runBefore(){
+        test1 = new OpeningList();
         test1.addOpening(new Move(1,true, 1, new Position(5, 2), new Position(5, 4)));
         test1.addOpening(new Move(1,true, 1, new Position(5, 2), new Position(5, 3)));
     }
