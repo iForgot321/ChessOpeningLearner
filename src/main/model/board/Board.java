@@ -1,5 +1,6 @@
 package model.board;
 
+
 // Representation of state of a chess board
 public class Board {
     // Positive values represent white pieces, negative values represent black pieces
@@ -10,6 +11,9 @@ public class Board {
     public static final int R = 4;      // Rook
     public static final int Q = 5;      // Queen
     public static final int K = 6;      // King
+
+    public static final String[] toString = {"k","q","r","b","n","p"," ","P","N","B","R","Q","K"};
+    public static final String[] toNotation = {"","N","B","R","Q","K"};
 
     /*
     movedPieces[0] is whether white king has moved
@@ -29,7 +33,7 @@ public class Board {
         }
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                this.board[i] = b[i];
+                this.board[i][j] = b[i][j];
             }
         }
     }
@@ -41,7 +45,7 @@ public class Board {
         }
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                this.board[i] = b.board[i];
+                this.board[i][j] = b.board[i][j];
             }
         }
     }
@@ -61,7 +65,7 @@ public class Board {
     // EFFECTS: returns board after move performed, replacing end position with original piece
     //          and start position with empty value
     public Board move(Position start, Position end) {
-        Board newBoard = new Board(this);
+        Board newBoard = new Board(movedPieces, board);
         int piece = newBoard.board[start.row][start.col];
         newBoard.board[start.row][start.col] = E;
         newBoard.board[end.row][end.col] = piece;

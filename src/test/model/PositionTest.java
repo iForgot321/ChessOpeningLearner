@@ -30,4 +30,9 @@ public class PositionTest {
         assertFalse(pos.equals(pos4));
         assertFalse(pos.equals(pos5));
     }
+
+    @Test
+    void testNotation() {
+        assertEquals("f4", pos.toChessNotation());
+    }
 }

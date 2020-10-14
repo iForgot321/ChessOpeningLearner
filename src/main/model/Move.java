@@ -112,6 +112,7 @@ public class Move {
     // REQUIRES: all input parameters to fit their class restrictions
     // EFFECTS: returns -1 if move is illegal, -2 if input is wrong. returns 1 if move is pawn promotion,
     //          2 if move is castle, 3 if move is en passant, 0 if regular move.
+    //use Move object as parameter
 //    public static int isMoveLegal(Move pm, Board b, int piece, Position start, Position end) {
 //        int sr = start.getRow();
 //        int sc = start.getCol();

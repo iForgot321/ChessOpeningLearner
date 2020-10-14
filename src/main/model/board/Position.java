@@ -31,4 +31,9 @@ public class Position {
     public boolean equals(Position p) {
         return p != null && getRow() == p.getRow() && getCol() == p.getCol();
     }
+
+    // EFFECTS: returns position coordinates into chess notation as a String
+    public String toChessNotation() {
+        return Character.toString((char) ('a' + col)) + Integer.toString(8 - row);
+    }
 }
