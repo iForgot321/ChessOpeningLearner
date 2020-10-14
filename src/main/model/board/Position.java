@@ -34,6 +34,27 @@ public class Position {
 
     // EFFECTS: returns position coordinates into chess notation as a String
     public String toChessNotation() {
-        return Character.toString((char) ('a' + col)) + Integer.toString(8 - row);
+        return (char) ('a' + col) + Integer.toString(8 - row);
+    }
+
+    // EFFECTS: returns a position object with given row and column values from s, else returns null
+    public static Position notationToPosition(String s) {
+        if (s.length() != 2) {
+            return null;
+        }
+
+        String[] sa = s.split("");
+        try {
+            int row = 8 - Integer.parseInt(sa[1]);
+            int col = sa[0].charAt(0) - 'a';
+
+            if (row <= 7 && row >= 0 && col <= 7 && col >= 0) {
+                return new Position(row, col);
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

@@ -38,7 +38,7 @@ public class Move {
         this.board = new Board(m.board);
     }
 
-    // REQUIRES: i less than length of list
+    // REQUIRES: i is positive and less than length of list
     // EFFECTS: returns move at index i
     public Move getChildMove(int i) {
         return childMoves.get(i);
@@ -57,17 +57,11 @@ public class Move {
         return true;
     }
 
-    // REQUIRES: piece and end to be of the move parameters
+    // REQUIRES: index i positive and less than length of list
     // MODIFIES: this
-    // EFFECTS: removes a move from list and returns ture, else if does not exists return false
-    public boolean removeChildMove(int piece, Position end) {
-        for (Move i : childMoves) {
-            if (piece == i.getPiece() && i.getEnd().equals(end)) {
-                childMoves.remove(i);
-                return true;
-            }
-        }
-        return false;
+    // EFFECTS: removes a move from list and index i
+    public void removeChildMove(int i) {
+        childMoves.remove(i);
     }
 
     // EFFECTS: returns number of moves in list of children moves

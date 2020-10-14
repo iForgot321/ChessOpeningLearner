@@ -95,12 +95,8 @@ public class MoveTest {
     @Test
     void testRemoveMove() {
         test.addChildMove(test2);
-        assertTrue(test.removeChildMove(1, new Position(4, 4)));
+        test.removeChildMove(0);
         assertEquals(0, test.length());
-
-        test.addChildMove(test3);
-        test.addChildMove(test4);
-        assertFalse(test.removeChildMove(1, new Position(4, 4)));
     }
 
     @Test

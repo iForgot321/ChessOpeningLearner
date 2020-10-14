@@ -32,7 +32,19 @@ public class PositionTest {
     }
 
     @Test
-    void testNotation() {
+    void testToNotation() {
         assertEquals("f4", pos.toChessNotation());
+    }
+
+    @Test
+    void testNotationToPosition() {
+        assertTrue(pos.equals(Position.notationToPosition("f4")));
+        assertFalse(pos.equals(Position.notationToPosition("f45")));
+        assertFalse(pos.equals(Position.notationToPosition("fg")));
+        assertFalse(pos.equals(Position.notationToPosition("k4")));
+        assertFalse(pos.equals(Position.notationToPosition("f9")));
+        assertFalse(pos.equals(Position.notationToPosition("A4")));
+        assertFalse(pos.equals(Position.notationToPosition("f0")));
+        assertFalse(pos.equals(Position.notationToPosition("f5")));
     }
 }

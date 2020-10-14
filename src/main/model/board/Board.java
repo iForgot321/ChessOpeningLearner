@@ -139,4 +139,24 @@ public class Board {
         }
         return true;
     }
+
+    // EFFECTS: coverts string into the corresponding piece value, else returns -1
+    public static int stringToPiece(String s) {
+        switch (s) {
+            case "":
+                return P;
+            case "N":
+                return N;
+            case "B":
+                return B;
+            case "R":
+                return R;
+            case "Q":
+                return Q;
+            case "K":
+                return K;
+            default:
+                return -1;
+        }
+    }
 }

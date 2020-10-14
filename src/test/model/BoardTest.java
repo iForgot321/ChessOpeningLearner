@@ -92,4 +92,15 @@ public class BoardTest {
         assertFalse(test.equals(test4));
         assertFalse(test.equals(test5));
     }
+
+    @Test
+    void testStringToPiece() {
+        assertEquals(P, stringToPiece(""));
+        assertEquals(N, stringToPiece("N"));
+        assertEquals(B, stringToPiece("B"));
+        assertEquals(R, stringToPiece("R"));
+        assertEquals(Q, stringToPiece("Q"));
+        assertEquals(K, stringToPiece("K"));
+        assertEquals(-1, stringToPiece("T"));
+    }
 }

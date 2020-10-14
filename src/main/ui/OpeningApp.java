@@ -69,8 +69,8 @@ public class OpeningApp {
         System.out.println("Input the move with the beginning position and end position separated by a space.");
         System.out.println("E.g. e2 e4");
         while (true) {
-            Position start = notationToPosition(scan.next());
-            Position end = notationToPosition(scan.next());
+            Position start = Position.notationToPosition(scan.next());
+            Position end = Position.notationToPosition(scan.next());
 
             if (start != null && end != null) {
                 int newNum = currentMove.getMoveNum() + 1;
@@ -91,26 +91,20 @@ public class OpeningApp {
     }
 
     private void deleteMove() {
-        System.out.println("Specify the move to be deleted with the piece and end position (Pawn has no piece)");
-        System.out.println("E.g. e4");
+        System.out.println("Specify the index of the move to be deleted");
+        System.out.println("E.g. 1");
         while (true) {
             String input = scan.next();
-            int piece = P;
-            if (input.length() == 3) {
-                piece = stringToPiece(input.substring(0, 1));
-                input = input.substring(1);
-            }
-            Position end = notationToPosition(input);
-
-            if (end != null && piece != -1) {
-                boolean b = currentMove.removeChildMove(piece, end);
-                if (b) {
-                    System.out.println("Move successfully removed");
+            try {
+                int i = Integer.parseInt(input);
+                if (i >= 0 && i < currentMove.length()) {
+                    currentMove.removeChildMove(i);
+                    System.out.println("Move removed");
+                    return;
                 } else {
-                    System.out.println("Move does not exist");
+                    System.out.println("Index out of range");
                 }
-                return;
-            } else {
+            } catch (Exception e) {
                 System.out.println("Position not recognized");
             }
         }
@@ -145,43 +139,6 @@ public class OpeningApp {
         } else {
             currentMove = currentMove.getParentMove();
             System.out.println("Returning to previous move");
-        }
-    }
-
-    private Position notationToPosition(String s) {
-        String[] sa = s.split("");
-        if (sa.length != 2) {
-            return null;
-        }
-        try {
-            int row = 8 - Integer.parseInt(sa[1]);
-            int col = sa[0].charAt(0) - 'a';
-            if (row <= 7 && row >= 0 && col <= 7 && col >= 0) {
-                return new Position(row, col);
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private int stringToPiece(String s) {
-        switch (s) {
-            case "":
-                return P;
-            case "N":
-                return N;
-            case "B":
-                return B;
-            case "R":
-                return R;
-            case "Q":
-                return Q;
-            case "K":
-                return K;
-            default:
-                return -1;
         }
     }
 
