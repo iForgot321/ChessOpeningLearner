@@ -1,8 +1,8 @@
 package model.board;
 
 // Representation of state of a chess board
-// Positive values represent white pieces, negative values represent black pieces
 public class Board {
+    // Positive values represent white pieces, negative values represent black pieces
     public static final int E = 0;      // Empty
     public static final int P = 1;      // Pawn
     public static final int N = 2;      // Knight
@@ -11,10 +11,18 @@ public class Board {
     public static final int Q = 5;      // Queen
     public static final int K = 6;      // King
 
+    /*
+    movedPieces[0] is whether white king has moved
+    movedPieces[1] is whether black king has moved
+    movedPieces[2] is whether white rook on first file has moved
+    movedPieces[3] is whether white rook on eighth file has moved
+    movedPieces[4] is whether black rook on first file has moved
+    movedPieces[5] is whether black rook on eighth rank has moved
+     */
     private boolean[] movedPieces = new boolean[6];
     private int[][] board = new int[8][8];
 
-    // EFFECTS: creates class with input arrays
+    // EFFECTS: creates class with same values as input arrays moved and b
     public Board(boolean[] moved, int[][] b) {
         for (int i = 0; i < 6; i++) {
             this.movedPieces[i] = moved[i];
@@ -42,6 +50,12 @@ public class Board {
     // EFFECTS: returns value of board at row and column from input
     public int get(int row, int col) {
         return board[row][col];
+    }
+
+    // REQUIRES: i to be within the range [0, 5]
+    // EFFECTS returns the value of movePieces at index i
+    public boolean getMoved(int i) {
+        return movedPieces[i];
     }
 
     // EFFECTS: returns board after move performed, replacing end position with original piece

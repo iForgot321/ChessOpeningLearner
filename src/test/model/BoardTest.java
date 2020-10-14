@@ -39,6 +39,11 @@ public class BoardTest {
     }
 
     @Test
+    void testGetMoved() {
+        assertFalse(test.getMoved(3));
+    }
+
+    @Test
     void testMove() {
         Board res = test.move(new Position(2, 2), new Position(3, 4));
         assertEquals(E, res.get(2, 2));
