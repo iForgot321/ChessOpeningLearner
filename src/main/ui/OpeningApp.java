@@ -73,7 +73,7 @@ public class OpeningApp {
     // MODIFIES: this
     // EFFECTS: Adds child move to currentMove, with positions taken from console input
     private void addMove() {
-        System.out.println("Input the move with the beginning and end position separated by a space.\nE.g. e2 e4");
+        System.out.println("\nInput the move with the beginning and end position separated by a space.\nE.g. e2 e4");
         while (true) {
             Position start = Position.notationToPosition(scan.next());
             Position end = Position.notationToPosition(scan.next());
@@ -82,16 +82,16 @@ public class OpeningApp {
                 int newPiece =  currentMove.getBoard().get(start.getRow(), start.getCol());
 
                 Board temp = currentMove.getBoard().move(start, end);
-                boolean cap = currentMove.getBoard().get(start.getRow(), start.getCol()) != E;
+                boolean cap = currentMove.getBoard().get(end.getRow(), end.getCol()) != E;
                 if (currentMove.addChildMove(new Move(newNum, newPiece, cap, start, end, currentMove, temp))) {
-                    System.out.println("Move successfully added");
+                    System.out.println("Move successfully added\n");
                     currentMove = currentMove.getChildMove(currentMove.length() - 1);
                 } else {
-                    System.out.println("Move already exists");
+                    System.out.println("Move already exists\n");
                 }
                 return;
             } else {
-                System.out.println("Positions not recognized");
+                System.out.println("Positions not recognized\n");
             }
         }
     }
@@ -99,21 +99,21 @@ public class OpeningApp {
     // MODIFIES: this
     // EFFECTS: removes move at given index from input
     private void deleteMove() {
+        displayMoveList();
         System.out.println("Specify the index of the move to be deleted");
-        System.out.println("E.g. 1");
         while (true) {
             String input = scan.next();
             try {
-                int i = Integer.parseInt(input);
+                int i = Integer.parseInt(input) - 1;
                 if (i >= 0 && i < currentMove.length()) {
                     currentMove.removeChildMove(i);
-                    System.out.println("Move removed");
+                    System.out.println("Move removed\n");
                     return;
                 } else {
-                    System.out.println("Index out of range");
+                    System.out.println("Index out of range\n");
                 }
             } catch (Exception e) {
-                System.out.println("Position not recognized");
+                System.out.println("Position not recognized\n");
             }
         }
     }
@@ -121,30 +121,30 @@ public class OpeningApp {
     // MODIFIES: this
     // EFFECTS: references currentMove to a child move specified from input
     private void viewMove() {
+        displayMoveList();
         System.out.println("Specify the index of the move to be viewed");
-        System.out.println("E.g. 1");
         while (true) {
             String input = scan.next();
             try {
-                int i = Integer.parseInt(input);
+                int i = Integer.parseInt(input) - 1;
                 if (i >= 0 && i < currentMove.length()) {
                     Move temp = currentMove.getChildMove(i);
-                    String piece = toNotation[Math.abs(temp.getPiece()) - 1];
+                    String piece = toNotation[Math.abs(temp.getPiece()) - 1] + (temp.isCaptures() ? "x" : "");
                     System.out.println("Selected " + piece + temp.getEnd().toChessNotation());
                     currentMove = temp;
                     return;
                 } else {
-                    System.out.println("Index out of range");
+                    System.out.println("Index out of range\n");
                 }
             } catch (Exception e) {
-                System.out.println("Position not recognized");
+                System.out.println("Position not recognized\n");
             }
         }
     }
 
     // EFFECTS: prints out current move list
     private void exportMove() {
-        System.out.println("Current sequence of moves:");
+        System.out.println("\nCurrent sequence of moves:");
         StringBuilder s = new StringBuilder();
         Move pointer = currentMove;
         while (pointer.getParentMove() != null) {
@@ -165,7 +165,7 @@ public class OpeningApp {
             keepGoing = false;
         } else {
             currentMove = currentMove.getParentMove();
-            System.out.println("Returning to previous move");
+            System.out.println("\nReturning to previous move\n");
         }
     }
 
@@ -174,23 +174,36 @@ public class OpeningApp {
         if (currentMove.getMoveNum() != 0) {
             System.out.println("Move number " + currentMove.getMoveNum());
         }
-        System.out.println("Current board state: ");
+        System.out.print("Current board state, ");
+        System.out.println((currentMove.isWhite() ? "black" : "white") + " to move:");
         printBoard(currentMove.getBoard());
 
         if (currentMove.length() == 0) {
-            System.out.println("There are no moves in this line");
+            System.out.println("There are no moves in this line\n");
         } else {
-            System.out.print("Next moves are:\n\t");
-            for (int i = 0; i < currentMove.length(); i++) {
-                Move temp = currentMove.getChildMove(i);
-                System.out.print(toNotation[Math.abs(temp.getPiece()) - 1] + temp.getEnd().toChessNotation());
-                if (i != currentMove.length() - 1) {
-                    System.out.print(", ");
-                }
-            }
-            System.out.println();
+            displayMoveList();
         }
         displayActions();
+    }
+
+    // EFFECT: displays list of next moves with indexes
+    public void displayMoveList() {
+        System.out.print("Next moves are:\n\t");
+        for (int i = 0; i < currentMove.length(); i++) {
+            Move temp = currentMove.getChildMove(i);
+            String index = "(" + (i + 1) + ") ";
+            String piece = toNotation[Math.abs(temp.getPiece()) - 1];
+            String cap = temp.isCaptures() ? "x" : "";
+            String disambig = "";
+            if (piece.equals("") && cap.equals("x")) {
+                disambig = String.valueOf(temp.getStart().toChessNotation().charAt(0));
+            }
+            System.out.print(index + piece + disambig + cap + temp.getEnd().toChessNotation());
+            if (i != currentMove.length() - 1) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println("\n");
     }
 
     // EFFECT: displays next possible actions
@@ -205,7 +218,7 @@ public class OpeningApp {
         } else {
             System.out.println("\tq - Return to previous move");
         }
-        System.out.println("\n");
+        System.out.println();
     }
 
     // EFFECTS: prints out Board b from input in console
@@ -219,7 +232,6 @@ public class OpeningApp {
             System.out.println("|");
             System.out.println("   _________________________________");
         }
-        System.out.println("     A   B   C   D   E   F   G   H");
-        System.out.println("\n\n");
+        System.out.println("     A   B   C   D   E   F   G   H\n");
     }
 }

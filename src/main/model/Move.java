@@ -7,14 +7,14 @@ import java.util.ArrayList;
 
 // Representation of a single move in a chess game
 public class Move {
-    private int moveNum;
-    private int piece; // defined from Board.java class
-    private boolean isCaptures;
-    private Position start;
-    private Position end;
-    private Move parentMove;
-    private ArrayList<Move> childMoves = new ArrayList<>();
-    private Board board;
+    private final int moveNum;
+    private final int piece; // defined from Board.java class
+    private final boolean isCaptures;
+    private final Position start;
+    private final Position end;
+    private final Move parentMove;
+    private final ArrayList<Move> childMoves = new ArrayList<>();
+    private final Board board;
 
     // EFFECTS: creates new move with parameters given
     public Move(int moveNum, int piece, boolean cap, Position start, Position end, Move parentMove, Board board) {

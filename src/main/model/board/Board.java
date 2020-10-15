@@ -1,6 +1,5 @@
 package model.board;
 
-
 // Representation of state of a chess board
 public class Board {
     // Positive values represent white pieces, negative values represent black pieces
@@ -23,30 +22,22 @@ public class Board {
     movedPieces[4] is whether black rook on first file has moved
     movedPieces[5] is whether black rook on eighth rank has moved
      */
-    private boolean[] movedPieces = new boolean[6];
-    private int[][] board = new int[8][8];
+    private final boolean[] movedPieces = new boolean[6];
+    private final int[][] board = new int[8][8];
 
     // EFFECTS: creates class with same values as input arrays moved and b
     public Board(boolean[] moved, int[][] b) {
-        for (int i = 0; i < 6; i++) {
-            this.movedPieces[i] = moved[i];
-        }
+        System.arraycopy(moved, 0, this.movedPieces, 0, 6);
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                this.board[i][j] = b[i][j];
-            }
+            System.arraycopy(b[i], 0, this.board[i], 0, 8);
         }
     }
 
     // EFFECTS: creates deep copy of input Board b
     public Board(Board b) {
-        for (int i = 0; i < 6; i++) {
-            this.movedPieces[i] = b.movedPieces[i];
-        }
+        System.arraycopy(b.movedPieces, 0, this.movedPieces, 0, 6);
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                this.board[i][j] = b.board[i][j];
-            }
+            System.arraycopy(b.board[i], 0, this.board[i], 0, 8);
         }
     }
 
