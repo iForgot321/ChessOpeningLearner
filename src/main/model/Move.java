@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Move {
     private int moveNum;
     private int piece; // defined from Board.java class
+    private boolean isCaptures;
     private Position start;
     private Position end;
     private Move parentMove;
@@ -16,9 +17,10 @@ public class Move {
     private Board board;
 
     // EFFECTS: creates new move with parameters given
-    public Move(int moveNum, int piece, Position start, Position end, Move parentMove, Board board) {
+    public Move(int moveNum, int piece, boolean cap, Position start, Position end, Move parentMove, Board board) {
         this.moveNum = moveNum;
         this.piece = piece;
+        this.isCaptures = cap;
         this.start = new Position(start);
         this.end = new Position(end);
         this.parentMove = parentMove;
@@ -29,6 +31,7 @@ public class Move {
     public Move(Move m) {
         this.moveNum = m.moveNum;
         this.piece = m.piece;
+        this.isCaptures = m.isCaptures;
         this.start = new Position(m.start);
         this.end = new Position(m.end);
         this.parentMove = m.parentMove;
@@ -79,6 +82,10 @@ public class Move {
 
     public int getPiece() {
         return piece;
+    }
+
+    public boolean isCaptures() {
+        return isCaptures;
     }
 
     public Position getStart() {

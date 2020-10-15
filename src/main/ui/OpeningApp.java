@@ -6,17 +6,21 @@ import model.board.*;
 import model.Move;
 import static model.board.Board.*;
 
+// User interface for the application
 public class OpeningApp {
     Move currentMove;
     Move root;
     Scanner scan = new Scanner(System.in);
     boolean keepGoing = true;
 
+    // EFFECTS: Begins input process
     public OpeningApp() {
         init();
         useOpenings();
     }
 
+    // MODIFIES: this
+    // EFFECTS: initializes beginning variables and objects with default values
     private void init() {
         int[][] board = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, -P, -P, -P, -P, -P},
@@ -29,10 +33,11 @@ public class OpeningApp {
         boolean[] moved = new boolean[6];
         Board b = new Board(moved, board);
 
-        root = new Move(0, 0, new Position(-1, -1), new Position(-1, -1), null, b);
+        root = new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, b);
         currentMove = root;
     }
 
+    // EFFECTS: loops action process until keepGoing == false
     private void useOpenings() {
         while (keepGoing) {
             inputMessage();
@@ -40,44 +45,45 @@ public class OpeningApp {
         }
     }
 
+    // EFFECTS: Takes in input and uses corresponding function
     private void processAction() {
         while (true) {
             System.out.print("Action: ");
             String action = scan.next();
-            System.out.println();
-            switch (action) {
-                case "a":
-                    addMove();
-                    return;
-                case "d":
-                    deleteMove();
-                    return;
-                case "v":
-                    viewMove();
-                    return;
-                case "q":
-                    quit();
-                    return;
-                default:
-                    System.out.println("Action not recognized");
-                    break;
+            if (action.equals("a")) {
+                addMove();
+                return;
+            } else if (action.equals("d")) {
+                deleteMove();
+                return;
+            } else if (action.equals("v")) {
+                viewMove();
+                return;
+            } else if (action.equals("e")) {
+                exportMove();
+            } else if (action.equals("q")) {
+                quit();
+                return;
+            } else {
+                System.out.println("Action not recognized");
             }
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: Adds child move to currentMove, with positions taken from console input
     private void addMove() {
-        System.out.println("Input the move with the beginning position and end position separated by a space.");
-        System.out.println("E.g. e2 e4");
+        System.out.println("Input the move with the beginning and end position separated by a space.\nE.g. e2 e4");
         while (true) {
             Position start = Position.notationToPosition(scan.next());
             Position end = Position.notationToPosition(scan.next());
-
             if (start != null && end != null) {
                 int newNum = currentMove.getMoveNum() + 1;
                 int newPiece =  currentMove.getBoard().get(start.getRow(), start.getCol());
+
                 Board temp = currentMove.getBoard().move(start, end);
-                boolean b = currentMove.addChildMove(new Move(newNum, newPiece, start, end, currentMove, temp));
-                if (b) {
+                boolean cap = currentMove.getBoard().get(start.getRow(), start.getCol()) != E;
+                if (currentMove.addChildMove(new Move(newNum, newPiece, cap, start, end, currentMove, temp))) {
                     System.out.println("Move successfully added");
                     currentMove = currentMove.getChildMove(currentMove.length() - 1);
                 } else {
@@ -90,6 +96,8 @@ public class OpeningApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: removes move at given index from input
     private void deleteMove() {
         System.out.println("Specify the index of the move to be deleted");
         System.out.println("E.g. 1");
@@ -110,6 +118,8 @@ public class OpeningApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: references currentMove to a child move specified from input
     private void viewMove() {
         System.out.println("Specify the index of the move to be viewed");
         System.out.println("E.g. 1");
@@ -132,6 +142,23 @@ public class OpeningApp {
         }
     }
 
+    // EFFECTS: prints out current move list
+    private void exportMove() {
+        System.out.println("Current sequence of moves:");
+        StringBuilder s = new StringBuilder();
+        Move pointer = currentMove;
+        while (pointer.getParentMove() != null) {
+            s.insert(0, toNotation[Math.abs(pointer.getPiece()) - 1] + pointer.getEnd().toChessNotation() + " ");
+            if (pointer.isWhite()) {
+                s.insert(0, ((pointer.getMoveNum() + 1) / 2) + ". ");
+            }
+            pointer = pointer.getParentMove();
+        }
+        System.out.println(s);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: returns to parent move, quits application if already at root move
     private void quit() {
         if (currentMove.getMoveNum() == 0) {
             System.out.println("Goodbye!");
@@ -142,6 +169,7 @@ public class OpeningApp {
         }
     }
 
+    // EFFECTS: displays current board state and move list
     private void inputMessage() {
         if (currentMove.getMoveNum() != 0) {
             System.out.println("Move number " + currentMove.getMoveNum());
@@ -165,11 +193,13 @@ public class OpeningApp {
         displayActions();
     }
 
+    // EFFECT: displays next possible actions
     private void displayActions() {
         System.out.println("Please select an action from the list below");
         System.out.println("\ta - Add a new opening line from current board state");
         System.out.println("\td - Delete an existing opening line");
         System.out.println("\tv - View an existing opening line");
+        System.out.println("\te - Export current opening line");
         if (currentMove.getMoveNum() == 0) {
             System.out.println("\tq - Exit the application");
         } else {
@@ -178,6 +208,7 @@ public class OpeningApp {
         System.out.println("\n");
     }
 
+    // EFFECTS: prints out Board b from input in console
     private static void printBoard(Board b) {
         System.out.println("   _________________________________");
         for (int i = 0; i < 8; i++) {
