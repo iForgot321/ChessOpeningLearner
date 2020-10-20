@@ -11,3 +11,5 @@ As a user, I want to be able to
  - add alternative lines
  - delete openings
  - export and import openings via PGN 
+ - save current opening list to disk
+ - load opening list that was previously saved
