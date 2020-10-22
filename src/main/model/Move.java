@@ -2,11 +2,14 @@ package model;
 
 import model.board.Board;
 import model.board.Position;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
 
 import java.util.ArrayList;
 
 // Representation of a single move in a chess game
-public class Move {
+public class Move implements Writable {
     private final int moveNum;
     private final int piece; // defined from Board.java class
     private final boolean isCaptures;
@@ -229,5 +232,29 @@ public class Move {
 
     public static boolean inCheck(Board b, boolean whiteTurn) {
         return false;
+    }
+
+    // EFFECTS: return move as JSON Object
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("moveNum", moveNum);
+        json.put("piece", piece);
+        json.put("isCaptures", isCaptures);
+        json.put("start", start.toJson());
+        json.put("end", end.toJson());
+        json.put("board", board.toJson());
+        addChildrenJson(json);
+        return json;
+    }
+
+    // MODIFIES: child
+    // EFFECTS: adds children moves as JSON Objects to json
+    private void addChildrenJson(JSONObject json) {
+        JSONArray jsonArray = new JSONArray();
+        for (Move child : childMoves) {
+            jsonArray.put(child.toJson());
+        }
+        json.put("childMoves", jsonArray);
     }
 }

@@ -1,7 +1,10 @@
 package model.board;
 
+import org.json.JSONObject;
+import persistence.Writable;
+
 // Row and column values of a piece; uses zero based indexing
-public class Position {
+public class Position implements Writable {
     final int col;
     final int row;
 
@@ -56,5 +59,14 @@ public class Position {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    // EFFECTS: return position as JSON Object
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("row", row);
+        json.put("col", col);
+        return json;
     }
 }

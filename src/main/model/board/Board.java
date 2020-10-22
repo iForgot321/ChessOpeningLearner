@@ -1,7 +1,11 @@
 package model.board;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import persistence.Writable;
+
 // Representation of state of a chess board
-public class Board {
+public class Board implements Writable {
     // Positive values represent white pieces, negative values represent black pieces
     public static final int E = 0;      // Empty
     public static final int P = 1;      // Pawn
@@ -149,5 +153,38 @@ public class Board {
             default:
                 return -1;
         }
+    }
+
+    // EFFECTS: return board as JSON Object
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        addMovedPieces(json);
+        addBoard(json);
+        return json;
+    }
+
+    // MODIFIES: json
+    // EFFECTS: add movedPieces to json as JSONArray
+    private void addMovedPieces(JSONObject json) {
+        JSONArray jsonArray = new JSONArray();
+        for (boolean moved : movedPieces) {
+            jsonArray.put(moved);
+        }
+        json.put("movedPieces", jsonArray);
+    }
+
+    // MODIFIES: json
+    // EFFECTS: add board to json as 2D JSONArray
+    private void addBoard(JSONObject json) {
+        JSONArray jsonArray = new JSONArray();
+        for (int[] row : board) {
+            JSONArray jsonRow = new JSONArray();
+            for (int val : row) {
+                jsonRow.put(val);
+            }
+            jsonArray.put(jsonRow);
+        }
+        json.put("pieceBoard", jsonArray);
     }
 }

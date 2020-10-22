@@ -3,6 +3,8 @@ package model;
 import model.board.Position;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 
 public class PositionTest {
@@ -46,5 +48,12 @@ public class PositionTest {
         assertFalse(pos.equals(Position.notationToPosition("A4")));
         assertFalse(pos.equals(Position.notationToPosition("f0")));
         assertFalse(pos.equals(Position.notationToPosition("f5")));
+    }
+
+    @Test
+    void testToJson() {
+        JSONObject json = pos.toJson();
+        assertEquals(json.getInt("row"), 4);
+        assertEquals(json.getInt("col"), 5);
     }
 }

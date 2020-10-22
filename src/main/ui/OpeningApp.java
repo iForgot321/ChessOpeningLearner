@@ -121,6 +121,10 @@ public class OpeningApp {
     // MODIFIES: this
     // EFFECTS: references currentMove to a child move specified from input
     private void viewMove() {
+        if (currentMove.length() == 0) {
+            System.out.println("There are no moves to be viewed\n");
+            return;
+        }
         displayMoveList();
         System.out.println("Specify the index of the move to be viewed");
         while (true) {

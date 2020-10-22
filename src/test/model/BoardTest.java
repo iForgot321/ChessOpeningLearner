@@ -5,6 +5,9 @@ import model.board.Board;
 import static model.board.Board.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -102,5 +105,26 @@ public class BoardTest {
         assertEquals(Q, stringToPiece("Q"));
         assertEquals(K, stringToPiece("K"));
         assertEquals(-1, stringToPiece("T"));
+    }
+
+    @Test
+    void testToJson() {
+        JSONObject json = test.toJson();
+        JSONArray jsonMovePieces = json.getJSONArray("movedPieces");
+        boolean[] movedPieces = new boolean[jsonMovePieces.length()];
+        for (int i = 0; i < jsonMovePieces.length(); i++) {
+            movedPieces[i] = jsonMovePieces.getBoolean(i);
+        }
+
+        JSONArray jsonBoard = json.getJSONArray("pieceBoard");
+        int[][] board = new int[jsonBoard.length()][jsonBoard.length()];
+        for (int i = 0; i < jsonBoard.length(); i++) {
+            JSONArray rows = jsonBoard.getJSONArray(i);
+            for (int j = 0; j < jsonBoard.length(); j++) {
+                board[i][j] = rows.getInt(j);
+            }
+        }
+
+        assertTrue(test.equals(new Board(movedPieces, board)));
     }
 }

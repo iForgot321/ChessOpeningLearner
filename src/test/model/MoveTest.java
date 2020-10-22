@@ -5,6 +5,8 @@ import model.board.Board;
 
 import static model.board.Board.*;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -122,7 +124,7 @@ public class MoveTest {
 
     @Test
     void testIsCaptures() {
-        assertTrue(test.isCaptures());
+        assertFalse(test.isCaptures());
     }
 
     @Test
@@ -192,5 +194,15 @@ public class MoveTest {
         assertFalse(test.equals(new Move(0, 0, false, new Position(-1, -1), new Position(-1, -2), null, b)));
         assertFalse(test.equals(new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, null)));
 
+    }
+
+    @Test
+    void testToJson() {
+        JSONObject json = test.toJson();
+
+        assertEquals(test.getMoveNum(), json.getInt("moveNum"));
+        assertEquals(test.getPiece(), json.getInt("piece"));
+        assertEquals(test.isCaptures(), json.getBoolean("isCaptures"));
+        assertEquals(test.length(), json.getJSONArray("childMoves").length());
     }
 }
