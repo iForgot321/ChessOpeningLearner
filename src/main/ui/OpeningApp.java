@@ -1,17 +1,25 @@
 package ui;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 import model.board.*;
 import model.Move;
+import persistence.JsonReader;
+import persistence.JsonWriter;
+
 import static model.board.Board.*;
 
 // User interface for the application
 public class OpeningApp {
-    Move currentMove;
-    Move root;
-    Scanner scan = new Scanner(System.in);
-    boolean keepGoing = true;
+    private static final String OPENING_FILE = "./data/openingList.json";
+    private Move root;
+    private Move currentMove;
+    private final Scanner scan = new Scanner(System.in);
+    private boolean keepGoing = true;
+    private JsonReader reader;
+    private JsonWriter writer;
 
     // EFFECTS: Begins input process
     public OpeningApp() {
@@ -35,6 +43,9 @@ public class OpeningApp {
 
         root = new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, b);
         currentMove = root;
+
+        reader = new JsonReader(OPENING_FILE);
+        writer = new JsonWriter(OPENING_FILE);
     }
 
     // EFFECTS: loops action process until keepGoing == false
@@ -47,26 +58,25 @@ public class OpeningApp {
 
     // EFFECTS: Takes in input and uses corresponding function
     private void processAction() {
-        while (true) {
-            System.out.print("Action: ");
-            String action = scan.next();
-            if (action.equals("a")) {
-                addMove();
-                return;
-            } else if (action.equals("d")) {
-                deleteMove();
-                return;
-            } else if (action.equals("v")) {
-                viewMove();
-                return;
-            } else if (action.equals("e")) {
-                exportMove();
-            } else if (action.equals("q")) {
-                quit();
-                return;
-            } else {
-                System.out.println("Action not recognized");
-            }
+        System.out.print("Action: ");
+        String action = scan.next();
+        if (action.equals("a")) {
+            addMove();
+        } else if (action.equals("d")) {
+            deleteMove();
+        } else if (action.equals("v")) {
+            viewMove();
+        } else if (action.equals("e")) {
+            exportMove();
+        } else if (action.equals("q")) {
+            quit();
+        } else if (action.equals("l")) {
+            loadMoves();
+        } else if (action.equals("s")) {
+            saveMoves();
+        } else {
+            System.out.println("Action not recognized");
+            processAction();
         }
     }
 
@@ -173,6 +183,30 @@ public class OpeningApp {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: load moves from json file
+    private void loadMoves() {
+        try {
+            root = reader.read();
+            currentMove = root;
+            System.out.println("Successfully loaded moves from " + OPENING_FILE);
+        } catch (IOException e) {
+            System.out.println("Error loading moves. Check " + OPENING_FILE + " for issues");
+        }
+    }
+
+    // EFFECTS: writes current move list to json file
+    private void saveMoves() {
+        try {
+            writer.open();
+            writer.write(root);
+            writer.close();
+            System.out.println("Successfully saved moves to " + OPENING_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Error saving moves. Check " + OPENING_FILE + " for issues");
+        }
+    }
+
     // EFFECTS: displays current board state and move list
     private void inputMessage() {
         if (currentMove.getMoveNum() != 0) {
@@ -198,11 +232,11 @@ public class OpeningApp {
             String index = "(" + (i + 1) + ") ";
             String piece = toNotation[Math.abs(temp.getPiece()) - 1];
             String cap = temp.isCaptures() ? "x" : "";
-            String disambig = "";
+            String startFile = "";
             if (piece.equals("") && cap.equals("x")) {
-                disambig = String.valueOf(temp.getStart().toChessNotation().charAt(0));
+                startFile = String.valueOf(temp.getStart().toChessNotation().charAt(0));
             }
-            System.out.print(index + piece + disambig + cap + temp.getEnd().toChessNotation());
+            System.out.print(index + piece + startFile + cap + temp.getEnd().toChessNotation());
             if (i != currentMove.length() - 1) {
                 System.out.print(", ");
             }
@@ -217,6 +251,8 @@ public class OpeningApp {
         System.out.println("\td - Delete an existing opening line");
         System.out.println("\tv - View an existing opening line");
         System.out.println("\te - Export current opening line");
+        System.out.println("\ts - Save current list to file");
+        System.out.println("\tl - Load list from file");
         if (currentMove.getMoveNum() == 0) {
             System.out.println("\tq - Exit the application");
         } else {
