@@ -56,7 +56,7 @@ public class JsonReaderTest {
             boolean[] moved = new boolean[6];
             Board b = new Board(moved, board);
 
-            assertTrue(m.equals(new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, b)));
+            assertTrue(m.equals(new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, b)));
         } catch (IOException e) {
             fail("Couldn't read from file");
         }
@@ -65,7 +65,6 @@ public class JsonReaderTest {
     @Test
     void testReaderMoveList() {
         JsonReader reader = new JsonReader("./data/testReaderMoveList.json");
-
         try {
             Move m = reader.read();
 
@@ -100,10 +99,9 @@ public class JsonReaderTest {
                     {R, N, B, Q, K, B, E, R}};
             Board b3 = new Board(moved, board3);
 
-            assertTrue(m.equals(new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, b)));
-            assertTrue(m.getChildMove(0).equals(new Move(1, P, false, new Position(6, 4), new Position(4, 4), m, b2)));
-            assertTrue(m.getChildMove(1).equals(new Move(1, N, false, new Position(7, 6), new Position(5, 5), m, b3)));
-
+            assertTrue(m.equals(new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, b)));
+            assertTrue(m.getChildMove(0).equals(new Move(1, P, false, false, new Position(6, 4), new Position(4, 4), m, b2)));
+            assertTrue(m.getChildMove(1).equals(new Move(1, N, false, false, new Position(7, 6), new Position(5, 5), m, b3)));
         } catch (IOException e) {
             fail("Couldn't read from file");
         }

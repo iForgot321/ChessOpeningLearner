@@ -2,6 +2,7 @@
     "moveNum": 0,
     "piece": 0,
     "isCaptures": false,
+    "isCheck": false,
     "start": {
         "row": -1,
         "col": -1

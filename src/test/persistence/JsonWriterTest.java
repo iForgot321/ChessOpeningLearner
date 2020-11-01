@@ -30,7 +30,7 @@ public class JsonWriterTest {
                 {R, N, B, Q, K, B, N, R}};
         boolean[] moved = new boolean[6];
         Board b = new Board(moved, board);
-        m = new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, b);
+        m = new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, b);
 
         int[][] board2 = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, -P, -P, -P, -P, -P},
@@ -41,7 +41,7 @@ public class JsonWriterTest {
                 {P, P, P, P, E, P, P, P},
                 {R, N, B, Q, K, B, N, R}};
         Board b2 = new Board(moved, board2);
-        m2 = new Move(1, P, false, new Position(6, 4), new Position(4, 4), m, b2);
+        m2 = new Move(1, P, false, false, new Position(6, 4), new Position(4, 4), m, b2);
 
         int[][] board3 = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, -P, -P, -P, -P, -P},
@@ -52,7 +52,7 @@ public class JsonWriterTest {
                 {P, P, P, P, E, P, P, P},
                 {R, N, B, Q, K, B, N, R}};
         Board b3 = new Board(moved, board3);
-        m3 = new Move(1, P, false, new Position(6, 4), new Position(5, 4), m, b3);
+        m3 = new Move(1, P, false, false, new Position(6, 4), new Position(5, 4), m, b3);
     }
 
     @Test

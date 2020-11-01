@@ -1,5 +1,6 @@
 {
     "childMoves": [],
+    "isCheck": false,
     "piece": 0,
     "isCaptures": false,
     "start": {

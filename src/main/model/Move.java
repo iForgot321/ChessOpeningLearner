@@ -14,7 +14,7 @@ public class Move implements Writable {
     private final int moveNum;
     private final int piece; // defined from Board.java class
     private final boolean isCaptures;
-    private final boolean isCheck = false;
+    private final boolean isCheck;
     private final Position start;
     private final Position end;
     private final Move parentMove;
@@ -22,14 +22,15 @@ public class Move implements Writable {
     private final Board board;
 
     // EFFECTS: creates new move with parameters given
-    public Move(int moveNum, int piece, boolean cap, Position start, Position end, Move parentMove, Board board) {
+    public Move(int moveNum, int piece, boolean cap, boolean check, Position start, Position end, Move pmove, Board b) {
         this.moveNum = moveNum;
         this.piece = piece;
         this.isCaptures = cap;
+        this.isCheck = check;
         this.start = new Position(start);
         this.end = new Position(end);
-        this.parentMove = parentMove;
-        this.board = board;
+        this.parentMove = pmove;
+        this.board = b;
     }
 
     // EFFECTS: creates a deep copy of the input Move m
@@ -37,6 +38,7 @@ public class Move implements Writable {
         this.moveNum = m.moveNum;
         this.piece = m.piece;
         this.isCaptures = m.isCaptures;
+        this.isCheck = m.isCheck;
         this.start = new Position(m.start);
         this.end = new Position(m.end);
         this.parentMove = m.parentMove;
@@ -93,6 +95,10 @@ public class Move implements Writable {
         return isCaptures;
     }
 
+    public boolean isCheck() {
+        return isCheck;
+    }
+
     public Position getStart() {
         return start;
     }
@@ -113,10 +119,6 @@ public class Move implements Writable {
     public boolean equals(Move m) {
         return m != null && moveNum == m.moveNum && piece == m.piece && start.equals(m.start) && end.equals(m.end)
                 && board.equals(m.board);
-    }
-
-    public static List<Position> getLegalMoves(Position p) {
-        return null;
     }
 
     // REQUIRES: board represents chess state before move made
@@ -254,6 +256,7 @@ public class Move implements Writable {
         json.put("moveNum", moveNum);
         json.put("piece", piece);
         json.put("isCaptures", isCaptures);
+        json.put("isCheck", isCheck);
         json.put("start", start.toJson());
         json.put("end", end.toJson());
         json.put("board", board.toJson());

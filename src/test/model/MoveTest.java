@@ -28,7 +28,7 @@ public class MoveTest {
                 {R, N, B, Q, K, B, N, R}};
         boolean[] moved = new boolean[6];
         Board b = new Board(moved, board);
-        test = new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, b);
+        test = new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, b);
 
         int[][] board2 = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, -P, -P, -P, -P, -P},
@@ -39,7 +39,7 @@ public class MoveTest {
                 {P, P, P, P, E, P, P, P},
                 {R, N, B, Q, K, B, N, R}};
         Board b2 = new Board(moved, board2);
-        test2 = new Move(1, P, false, new Position(6, 4), new Position(4, 4), test, b2);
+        test2 = new Move(1, P, false, false, new Position(6, 4), new Position(4, 4), test, b2);
 
         int[][] board3 = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, -P, -P, -P, -P, -P},
@@ -50,7 +50,7 @@ public class MoveTest {
                 {P, P, P, P, E, P, P, P},
                 {R, N, B, Q, K, B, N, R}};
         Board b3 = new Board(moved, board3);
-        test3 = new Move(1, P, false, new Position(6, 4), new Position(5, 4), test, b3);
+        test3 = new Move(1, P, false, false, new Position(6, 4), new Position(5, 4), test, b3);
 
         int[][] board4 = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, -P, -P, -P, -P, -P},
@@ -61,7 +61,7 @@ public class MoveTest {
                 {P, P, P, P, P, P, P, P},
                 {R, N, B, Q, K, B, E, R}};
         Board b4 = new Board(moved, board4);
-        test4 = new Move(1, N, false, new Position(7, 6), new Position(5, 5), test, b4);
+        test4 = new Move(1, N, false, false, new Position(7, 6), new Position(5, 5), test, b4);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class MoveTest {
                 {R, N, B, Q, K, B, N, R}};
         boolean[] moved = new boolean[6];
         Board b2 = new Board(moved, board2);
-        Move m = new Move(1, P, false, new Position(6, 4), new Position(4, 4), test, b2);
+        Move m = new Move(1, P, false, false, new Position(6, 4), new Position(4, 4), test, b2);
 
         assertTrue(test.getChildMove(0).equals(m));
     }
@@ -128,6 +128,11 @@ public class MoveTest {
     }
 
     @Test
+    void testIsCheck() {
+        assertFalse(test.isCheck());
+    }
+
+    @Test
     void testGetStart() {
         assertTrue(test2.getStart().equals(new Position(6, 4)));
     }
@@ -149,7 +154,7 @@ public class MoveTest {
                 {R, N, B, Q, K, B, N, R}};
         boolean[] moved = new boolean[6];
         Board b = new Board(moved, board);
-        Move m = new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, b);
+        Move m = new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, b);
 
         assertTrue(test2.getParentMove().equals(m));
     }
@@ -189,10 +194,10 @@ public class MoveTest {
 
         assertFalse(test.equals(null));
         assertFalse(test.equals(test2));
-        assertFalse(test.equals(new Move(0, K, false, new Position(-1, -1), new Position(-1, -1), null, b)));
-        assertFalse(test.equals(new Move(0, 0, false, new Position(-2, -1), new Position(-1, -1), null, b)));
-        assertFalse(test.equals(new Move(0, 0, false, new Position(-1, -1), new Position(-1, -2), null, b)));
-        assertFalse(test.equals(new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, null)));
+        assertFalse(test.equals(new Move(0, K, false, false, new Position(-1, -1), new Position(-1, -1), null, b)));
+        assertFalse(test.equals(new Move(0, 0, false, false, new Position(-2, -1), new Position(-1, -1), null, b)));
+        assertFalse(test.equals(new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -2), null, b)));
+        assertFalse(test.equals(new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, null)));
     }
 
     @Test

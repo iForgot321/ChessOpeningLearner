@@ -41,7 +41,7 @@ public class OpeningApp {
         boolean[] moved = new boolean[6];
         Board b = new Board(moved, board);
 
-        root = new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, b);
+        root = new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, b);
         currentMove = root;
 
         reader = new JsonReader(OPENING_FILE);
@@ -93,7 +93,7 @@ public class OpeningApp {
 
                 Board temp = currentMove.getBoard().move(start, end);
                 boolean cap = currentMove.getBoard().get(end.getRow(), end.getCol()) != E;
-                if (currentMove.addChildMove(new Move(newNum, newPiece, cap, start, end, currentMove, temp))) {
+                if (currentMove.addChildMove(new Move(newNum, newPiece, cap, false, start, end, currentMove, temp))) {
                     System.out.println("Move successfully added\n");
                     currentMove = currentMove.getChildMove(currentMove.length() - 1);
                 } else {

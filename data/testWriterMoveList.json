@@ -2,6 +2,7 @@
     "childMoves": [
         {
             "childMoves": [],
+            "isCheck": false,
             "piece": 1,
             "isCaptures": false,
             "start": {
@@ -108,6 +109,7 @@
         },
         {
             "childMoves": [],
+            "isCheck": false,
             "piece": 1,
             "isCaptures": false,
             "start": {
@@ -213,6 +215,7 @@
             }
         }
     ],
+    "isCheck": false,
     "piece": 0,
     "isCaptures": false,
     "start": {

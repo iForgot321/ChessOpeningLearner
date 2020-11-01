@@ -47,11 +47,12 @@ public class JsonReader {
         int moveNum = json.getInt("moveNum");
         int piece = json.getInt("piece");
         boolean cap = json.getBoolean("isCaptures");
+        boolean check = json.getBoolean("isCheck");
         Position start = parsePosition(json.getJSONObject("start"));
         Position end = parsePosition(json.getJSONObject("end"));
         Board board = parseBoard(json.getJSONObject("board"));
 
-        Move m = new Move(moveNum, piece, cap, start, end, parentMove, board);
+        Move m = new Move(moveNum, piece, cap, check, start, end, parentMove, board);
         addMoves(m, json);
         return m;
     }
