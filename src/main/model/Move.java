@@ -7,12 +7,14 @@ import org.json.JSONObject;
 import persistence.Writable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 // Representation of a single move in a chess game
 public class Move implements Writable {
     private final int moveNum;
     private final int piece; // defined from Board.java class
     private final boolean isCaptures;
+    private final boolean isCheck = false;
     private final Position start;
     private final Position end;
     private final Move parentMove;
@@ -113,105 +115,120 @@ public class Move implements Writable {
                 && board.equals(m.board);
     }
 
-    // REQUIRES: all input parameters to fit their class restrictions
+    public static List<Position> getLegalMoves(Position p) {
+        return null;
+    }
+
+    // REQUIRES: board represents chess state before move made
     // EFFECTS: returns -1 if move is illegal, -2 if input is wrong. returns 1 if move is pawn promotion,
     //          2 if move is castle, 3 if move is en passant, 0 if regular move.
-    //use Move object as parameter
-    public static int isMoveLegal(Move m) {
-        Move pm = m.parentMove;
-        Board b = m.board;
-        int piece = m.piece;
-        int sr = m.getStart().getRow();
-        int sc = m.getStart().getCol();
-        int er = m.getEnd().getRow();
-        int ec = m.getEnd().getCol();
-
-        if (b.get(sr, sc) != piece || m.getStart().equals(m.getEnd())) {
+    public int isLegal() {
+        if (board.get(start.getRow(), start.getCol()) != piece || board.move(start, end).isInCheck(isWhite())) {
             return -1;
         }
         
         int type = 0;
-        if (piece == Board.P) {
-            type = whitePawnMove(sr, sc, er, ec, b, pm);
-        } else if (piece == -Board.P) {
-            type = blackPawnMove(sr, sc, er, ec, b, pm);
-        } else if (Math.abs(piece) == Board.N) {
-            type = knightMove(sr, sc, er, ec);
-        } else if (Math.abs(piece) == Board.B) {
+        int absPiece = Math.abs(piece);
+        if (absPiece == Board.P) {
+            type = pawnMove();
+        } else if (absPiece == Board.N) {
+            type = knightMove();
+        } else if (absPiece == Board.B) {
             type = bishopMove();
-        } else if (Math.abs(piece) == Board.R) {
+        } else if (absPiece == Board.R) {
             type = rookMove();
-        } else if (Math.abs(piece) == Board.Q) {
+        } else if (absPiece == Board.Q) {
             type = queenMove();
-        } else if (Math.abs(piece) == Board.K) {
-            type = kingMove(sr, sc, er, ec, piece > 0, b);
+        } else if (absPiece == Board.K) {
+            type = kingMove();
         } else {
             return -2;
         }
 
-        if (inCheck(b.move(m.getStart(), m.getEnd()), piece < 0)) {
-            return -1;
-        }
         return type;
     }
 
-    private static int whitePawnMove(int sr, int sc, int er, int ec, Board b, Move pm) {
+    private int pawnMove() {
+        int sr = start.getRow();
+        int sc = start.getCol();
+        int er = end.getRow();
+        int ec = end.getCol();
         if (sc == ec) {
-            if (sr - er == 2) {
-                if (sr != 6 || b.get(er, ec) != Board.E || b.get(er - 1, ec) != Board.E) {
-                    return -1;
-                }
-            } else if (sr - er == 1) {
-                if (b.get(er, ec) != Board.E) {
-                    return -1;
-                }
-            } else {
+            return pawnForward(sr, sc, er, ec);
+        } else {
+            return pawnCapture(sr, sc, er, ec, parentMove);
+        }
+    }
+
+    private int pawnForward(int sr, int sc, int er, int ec) {
+        if (sr - er == 2) {
+            if (sr != 6 || board.get(er, ec) != Board.E || board.get(er - 1, ec) != Board.E) {
+                return -1;
+            }
+        } else if (sr - er == 1) {
+            if (board.get(er, ec) != Board.E) {
                 return -1;
             }
         } else {
-            if (Math.abs(ec - sc) != 1 || sr - er != 1) {
-                return -1;
-            } else if (b.get(er, ec) == Board.E) {
-                if (sr != 3 || b.get(er + 1, ec) != Board.P || pm.getPiece() != Board.P
-                        || pm.getStart().getRow() != 1 || pm.getStart().getCol() != ec
-                        || pm.getEnd().getRow() != 3) {
-                    return -1;
-                } else {
-                    return 3;
-                }
-            }
+            return -1;
         }
+
         if (er == 0) {
             return 1;
         }
         return 0;
     }
 
-    private static int blackPawnMove(int sr, int sc, int er, int ec, Board b, Move pm) {
-        return -1;
+    private int pawnCapture(int sr, int sc, int er, int ec, Move pm) {
+        if (Math.abs(ec - sc) != 1 || sr - er != 1) {
+            return -1;
+        } else if (board.get(er, ec) == Board.E) {
+            if (sr != 3 || board.get(er + 1, ec) != Board.P || pm.getPiece() != Board.P
+                    || pm.getStart().getRow() != 1 || pm.getStart().getCol() != ec
+                    || pm.getEnd().getRow() != 3) {
+                return -1;
+            } else {
+                return 3;
+            }
+        }
+
+        if (er == 0) {
+            return 1;
+        }
+        return 0;
     }
 
-    private static int knightMove(int sr, int sc, int er, int ec) {
-        if (!((Math.abs(ec - sc) == 2 && Math.abs(er - sr) == 1)
-                || (Math.abs(ec - sc) == 1 && Math.abs(er - sr) == 2))) {
+    private int knightMove() {
+        int colDiff = Math.abs(end.getCol() - start.getCol());
+        int rowDiff = Math.abs(end.getRow() - start.getRow());
+        if (!((colDiff == 2 && rowDiff == 1) || (colDiff == 1 && rowDiff == 2))) {
             return -1;
         }
         return 0;
     }
 
-    private static int bishopMove() {
+    private int bishopMove() {
         return -1;
     }
 
-    private static int rookMove() {
+    private int rookMove() {
         return -1;
     }
 
-    private static int queenMove() {
+    private int queenMove() {
+        if (bishopMove() == 0 || rookMove() == 0) {
+            return 0;
+        }
         return -1;
     }
 
-    private static int kingMove(int sr, int sc, int er, int ec, boolean isWhite, Board b) {
+    private int kingMove() {
+        int sr = start.getRow();
+        int sc = start.getCol();
+        int er = end.getRow();
+        int ec = end.getCol();
+        Board b = board;
+        boolean isWhite = piece > 0;
         if (er == sr && ec - sc == 2) {
             if (b.getMoved(isWhite ? 0 : 1) || b.getMoved(isWhite ? 3 : 5)) {
                 return -1;
@@ -228,10 +245,6 @@ public class Move implements Writable {
             return -1;
         }
         return 0;
-    }
-
-    public static boolean inCheck(Board b, boolean whiteTurn) {
-        return false;
     }
 
     // EFFECTS: return move as JSON Object

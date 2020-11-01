@@ -108,6 +108,103 @@ public class BoardTest {
     }
 
     @Test
+    void testIsInCheckFalse() {
+        Board test2 = new Board(new boolean[6], board2);
+        assertFalse(test2.isInCheck(true));
+        assertFalse(test2.isInCheck(false));
+    }
+
+    @Test
+    void testIsInCheckByPawn() {
+        int[][] example = {{E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, -K, E, E, E, E, E, E},
+                {P, E, E, E, -P, E, E, E},
+                {E, E, E, K, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E}};
+        Board test2 = new Board(new boolean[6], example);
+        assertTrue(test2.isInCheck(true));
+        assertTrue(test2.isInCheck(false));
+    }
+
+    @Test
+    void testIsInCheckByKnight() {
+        int[][] example = {{E, K, E, E, E, E, E, E},
+                {E, E, E, -N, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, -K, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, N, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E}};
+        Board test2 = new Board(new boolean[6], example);
+        assertTrue(test2.isInCheck(true));
+        assertTrue(test2.isInCheck(false));
+    }
+
+    @Test
+    void testIsInCheckByBishop() {
+        int[][] example = {{E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, -B, E, E, B, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, -P, E, E, E, E, E},
+                {E, -K, E, E, E, E, K, E},
+                {E, E, E, E, E, E, E, E}};
+        Board test2 = new Board(new boolean[6], example);
+        assertTrue(test2.isInCheck(true));
+        assertFalse(test2.isInCheck(false));
+    }
+
+    @Test
+    void testIsInCheckByRook() {
+        int[][] example = {{E, E, E, E, E, E, R, E},
+                {E, -R, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, -P, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, K, E, E, E, E, -K, E}};
+        Board test2 = new Board(new boolean[6], example);
+        assertTrue(test2.isInCheck(true));
+        assertFalse(test2.isInCheck(false));
+    }
+
+    @Test
+    void testIsInCheckByQueen() {
+        int[][] example = {{E, E, E, E, E, E, E, E},
+                {E, K, E, E, E, E, -Q, E},
+                {E, E, E, E, E, E, E, E},
+                {-K, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, Q, E, E, E}};
+        Board test2 = new Board(new boolean[6], example);
+        assertTrue(test2.isInCheck(true));
+        assertTrue(test2.isInCheck(false));
+    }
+
+    @Test
+    void testIsInCheckByKing() {
+        int[][] example = {{E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, K, E, E, E},
+                {E, E, E, E, E, -K, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E}};
+        Board test2 = new Board(new boolean[6], example);
+        assertTrue(test2.isInCheck(true));
+        assertTrue(test2.isInCheck(false));
+    }
+
+    @Test
     void testToJson() {
         JSONObject json = test.toJson();
         JSONArray jsonMovePieces = json.getJSONArray("movedPieces");

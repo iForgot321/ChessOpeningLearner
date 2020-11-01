@@ -155,6 +155,120 @@ public class Board implements Writable {
         }
     }
 
+    // EFFECTS: returns whether the given colour is in check
+    public boolean isInCheck(boolean checkWhite) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (pieceCheck(i, j, checkWhite)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // EFFECTS: returns whether the piece at position (i, j) is giving check to white if w is true, black if false
+    private boolean pieceCheck(int i, int j, boolean w) {
+        if (board[i][j] != 0 && board[i][j] < 0 == w) {
+            int absPiece = Math.abs(board[i][j]);
+            boolean inCheck;
+            if (absPiece == P) {
+                inCheck = pawnCheck(i, j, w);
+            } else if (absPiece == N) {
+                inCheck = knightCheck(i, j, w);
+            } else if (absPiece == B) {
+                inCheck = bishopCheck(i, j, w);
+            } else if (absPiece == R) {
+                inCheck = rookCheck(i, j, w);
+            } else if (absPiece == Q) {
+                inCheck = queenCheck(i, j, w);
+            } else {
+                inCheck = kingCheck(i, j, w);
+            }
+            return inCheck;
+        }
+        return false;
+    }
+
+    // EFFECTS: returns whether the pawn at (i, j) is giving check
+    private boolean pawnCheck(int i, int j, boolean w) {
+        int side = w ? 1 : -1;
+        return (j + 1 <= 7 && board[i + side][j + 1] == side * K) || (j - 1 >= 0 && board[i + side][j - 1] == side * K);
+    }
+
+    // EFFECTS: returns whether the knight at (i, j) is giving check
+    private boolean knightCheck(int i, int j, boolean w) {
+        int[][] knightMoves = {{2, 1}, {1, 2}, {-1, 2}, {-2, 1}, {-2, -1}, {-1, -2}, {1, -2}, {2, -1}};
+        for (int k = 0; k < 8; k++) {
+            int row = i + knightMoves[k][0];
+            int col = j + knightMoves[k][1];
+            if (row >= 0 && row <= 7 && col >= 0 && col <= 7 && board[row][col] == (w ? 1 : -1) * K) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // EFFECTS: returns whether the bishop at (i, j) is giving check
+    private boolean bishopCheck(int i, int j, boolean w) {
+        int[][] bishopDirs = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
+        for (int d = 0; d < 4; d++) {
+            for (int k = 1;; k++) {
+                int row = i + bishopDirs[d][0] * k;
+                int col = j + bishopDirs[d][1] * k;
+                if (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
+                    if (board[row][col] == (w ? 1 : -1) * K) {
+                        return true;
+                    } else if (board[row][col] != E) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        return false;
+    }
+
+    // EFFECTS: returns whether the rook at (i, j) is giving check
+    private boolean rookCheck(int i, int j, boolean w) {
+        int[][] rookDirs = {{1, 0}, {0, -1}, {-1, 0}, {0, 1}};
+        for (int d = 0; d < 4; d++) {
+            for (int k = 1;; k++) {
+                int row = i + rookDirs[d][0] * k;
+                int col = j + rookDirs[d][1] * k;
+                if (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
+                    if (board[row][col] == (w ? 1 : -1) * K) {
+                        return true;
+                    } else if (board[row][col] != E) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        return false;
+    }
+
+    // EFFECTS: returns whether the queen at (i, j) is giving check
+    private boolean queenCheck(int i, int j, boolean w) {
+        return bishopCheck(i, j, w) || rookCheck(i, j, w);
+    }
+
+    // EFFECTS: returns whether the king at (i, j) is giving check
+    private boolean kingCheck(int i, int j, boolean w) {
+        int[][] kingMoves = {{1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1}};
+        for (int k = 0; k < 8; k++) {
+            int row = i + kingMoves[k][0];
+            int col = j + kingMoves[k][1];
+            if (row >= 0 && row <= 7 && col >= 0 && col <= 7 && board[row][col] == (w ? 1 : -1) * K) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // EFFECTS: return board as JSON Object
     @Override
     public JSONObject toJson() {

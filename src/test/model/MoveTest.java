@@ -193,6 +193,10 @@ public class MoveTest {
         assertFalse(test.equals(new Move(0, 0, false, new Position(-2, -1), new Position(-1, -1), null, b)));
         assertFalse(test.equals(new Move(0, 0, false, new Position(-1, -1), new Position(-1, -2), null, b)));
         assertFalse(test.equals(new Move(0, 0, false, new Position(-1, -1), new Position(-1, -1), null, null)));
+    }
+
+    @Test
+    void testIsLegal() {
 
     }
 
