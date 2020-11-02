@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import persistence.Writable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 // Representation of a single move in a chess game
 public class Move implements Writable {
@@ -122,52 +121,53 @@ public class Move implements Writable {
     }
 
     // REQUIRES: board represents chess state before move made
-    // EFFECTS: returns -1 if move is illegal, -2 if input is wrong. returns 1 if move is pawn promotion,
+    // EFFECTS: returns -1 if move is illegal, 1 if move is pawn promotion,
     //          2 if move is castle, 3 if move is en passant, 0 if regular move.
     public int isLegal() {
-        if (board.get(start.getRow(), start.getCol()) != piece || board.move(start, end).isInCheck(isWhite())) {
+        int piece = board.get(start.getRow(), start.getCol());
+        if (board.get(end.getRow(), end.getCol()) * piece > 0 || board.move(start, end).isInCheck(isWhite())) {
             return -1;
         }
-        
-        int type = 0;
         int absPiece = Math.abs(piece);
         if (absPiece == Board.P) {
-            type = pawnMove();
+            return pawnMove();
         } else if (absPiece == Board.N) {
-            type = knightMove();
+            return knightMove();
         } else if (absPiece == Board.B) {
-            type = bishopMove();
+            return bishopMove();
         } else if (absPiece == Board.R) {
-            type = rookMove();
+            return rookMove();
         } else if (absPiece == Board.Q) {
-            type = queenMove();
+            return queenMove();
         } else if (absPiece == Board.K) {
-            type = kingMove();
+            return kingMove();
         } else {
-            return -2;
+            return -1;
         }
-
-        return type;
     }
 
+    // EFFECTS: returns 1 if pawn move is promotion, 3 if move is en passant, 0 if regular move. -1 if illegal.
     private int pawnMove() {
         int sr = start.getRow();
         int sc = start.getCol();
         int er = end.getRow();
         int ec = end.getCol();
+        int side = isWhite() ? 1 : -1;
         if (sc == ec) {
-            return pawnForward(sr, sc, er, ec);
+            return pawnForward(sr, er, ec, side);
         } else {
-            return pawnCapture(sr, sc, er, ec, parentMove);
+            return pawnCapture(sr, sc, er, ec, side, parentMove);
         }
     }
 
-    private int pawnForward(int sr, int sc, int er, int ec) {
-        if (sr - er == 2) {
-            if (sr != 6 || board.get(er, ec) != Board.E || board.get(er - 1, ec) != Board.E) {
+    // EFFECTS: checks whether pawn can make the move forward
+    private int pawnForward(int sr, int er, int ec, int side) {
+        if (sr - er == side * 2) {
+            int secondRow = side > 0 ? 6 : 1;
+            if (sr != secondRow || board.get(er, ec) != Board.E || board.get(er - side, ec) != Board.E) {
                 return -1;
             }
-        } else if (sr - er == 1) {
+        } else if (sr - er == side) {
             if (board.get(er, ec) != Board.E) {
                 return -1;
             }
@@ -175,14 +175,15 @@ public class Move implements Writable {
             return -1;
         }
 
-        if (er == 0) {
+        if (er == (side > 0 ? 0 : 7)) {
             return 1;
         }
         return 0;
     }
 
-    private int pawnCapture(int sr, int sc, int er, int ec, Move pm) {
-        if (Math.abs(ec - sc) != 1 || sr - er != 1) {
+    // EFFECTS: checks whether pawn can make the capturing move
+    private int pawnCapture(int sr, int sc, int er, int ec, int side, Move pm) {
+        if (Math.abs(ec - sc) != 1 || sr - er != side) {
             return -1;
         } else if (board.get(er, ec) == Board.E) {
             if (sr != 3 || board.get(er + 1, ec) != Board.P || pm.getPiece() != Board.P
@@ -194,36 +195,62 @@ public class Move implements Writable {
             }
         }
 
-        if (er == 0) {
+        if (er == (side > 0 ? 0 : 7)) {
             return 1;
         }
         return 0;
     }
 
+    // EFFECTS: checks whether knight move is legal
     private int knightMove() {
-        int colDiff = Math.abs(end.getCol() - start.getCol());
-        int rowDiff = Math.abs(end.getRow() - start.getRow());
-        if (!((colDiff == 2 && rowDiff == 1) || (colDiff == 1 && rowDiff == 2))) {
-            return -1;
-        }
-        return 0;
-    }
-
-    private int bishopMove() {
-        return -1;
-    }
-
-    private int rookMove() {
-        return -1;
-    }
-
-    private int queenMove() {
-        if (bishopMove() == 0 || rookMove() == 0) {
+        int colDiff = end.getCol() - start.getCol();
+        int rowDiff = end.getRow() - start.getRow();
+        if (Math.abs(rowDiff * colDiff) == 2) {
             return 0;
         }
         return -1;
     }
 
+    // EFFECTS: checks whether bishop move is legal
+    private int bishopMove() {
+        int rowDiff = end.getRow() - start.getRow();
+        int colDiff = end.getCol() - start.getCol();
+        if (Math.abs(rowDiff) == Math.abs(colDiff)) {
+            int rowDir = Math.abs(rowDiff) / rowDiff;
+            int colDir = Math.abs(colDiff) / colDiff;
+            for (int i = 1; i < Math.max(Math.abs(rowDiff), Math.abs(colDiff)); i++) {
+                if (board.get(start.getRow() + rowDir * i, start.getCol() + colDir * i) != Board.E) {
+                    return -1;
+                }
+            }
+            return 0;
+        }
+        return -1;
+    }
+
+    // EFFECTS: checks whether rook move is legal
+    private int rookMove() {
+        if (start.getCol() == end.getCol() || start.getRow() == end.getRow()) {
+            int rowDiff = end.getRow() - start.getRow();
+            int colDiff = end.getCol() - start.getCol();
+            int rowDir = rowDiff == 0 ? 0 : Math.abs(rowDiff) / rowDiff;
+            int colDir = colDiff == 0 ? 0 : Math.abs(colDiff) / colDiff;
+            for (int i = 1; i < Math.max(Math.abs(rowDiff), Math.abs(colDiff)); i++) {
+                if (board.get(start.getRow() + rowDir * i, start.getCol() + colDir * i) != Board.E) {
+                    return -1;
+                }
+            }
+            return 0;
+        }
+        return -1;
+    }
+
+    // EFFECTS: checks whether queen move is legal
+    private int queenMove() {
+        return bishopMove() == 0 || rookMove() == 0 ? 0 : -1;
+    }
+
+    // EFFECTS: checks whether king move is legal
     private int kingMove() {
         int sr = start.getRow();
         int sc = start.getCol();
@@ -243,7 +270,7 @@ public class Move implements Writable {
             } else if (b.get(er, 1) != Board.E || b.get(er, 2) != Board.E || b.get(er, 3) != Board.E) {
                 return -1;
             }
-        } else if (Math.abs(ec - sc) > 2 || Math.abs(er - sr) > 2) {
+        } else if (Math.abs(ec - sc) >= 2 || Math.abs(er - sr) >= 2) {
             return -1;
         }
         return 0;
