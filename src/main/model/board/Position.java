@@ -35,6 +35,16 @@ public class Position implements Writable {
         return p != null && getRow() == p.getRow() && getCol() == p.getCol();
     }
 
+    // EFFECTS: returns whether current position is a valid position in chess
+    public boolean isValid() {
+        return row >= 0 && row <= 7 && col >= 0 && col <= 7;
+    }
+
+    // EFFECTS: returns whether row and column are valid
+    public static boolean isValid(int row, int col) {
+        return row >= 0 && row <= 7 && col >= 0 && col <= 7;
+    }
+
     // EFFECTS: returns position coordinates into chess notation as a String
     public String toChessNotation() {
         return (char) ('a' + col) + Integer.toString(8 - row);
