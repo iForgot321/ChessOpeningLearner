@@ -51,6 +51,11 @@ public class Board implements Writable {
         return board[row][col];
     }
 
+    // EFFECTS: returns value of board at row and column from input p
+    public int get(Position p) {
+        return board[p.getRow()][p.getCol()];
+    }
+
     // REQUIRES: i to be within the range [0, 5]
     // EFFECTS returns the value of movePieces at index i
     public boolean getMoved(int i) {
@@ -64,6 +69,13 @@ public class Board implements Writable {
         int piece = newBoard.board[start.row][start.col];
         newBoard.board[start.row][start.col] = E;
         newBoard.board[end.row][end.col] = piece;
+        if (Math.abs(piece) == K) {
+            newBoard.movedPieces[piece > 0 ? 0 : 1] = true;
+        } else if (Math.abs(piece) == R && start.getCol() == 0) {
+            newBoard.movedPieces[piece > 0 ? 2 : 4] = true;
+        } else if (Math.abs(piece) == R && start.getCol() == 7) {
+            newBoard.movedPieces[piece > 0 ? 3 : 5] = true;
+        }
         return newBoard;
     }
 
@@ -79,20 +91,14 @@ public class Board implements Writable {
 
     // EFFECTS: returns board after castling, replacing end positions with the king and rook
     //          and start positions with empty values
-    public Board castle(boolean isWhite, boolean kingSide) {
+    public Board castle(Position start, Position end) {
         Board newBoard = new Board(this);
-        int row;
-        int colour;
-        if (isWhite) {
-            row = 7;
-            colour = 1;
-        } else {
-            row = 0;
-            colour = -1;
-        }
+        int row = start.getRow();
+        boolean isW = row == 7;
+        int colour = isW ? 1 : -1;
 
         newBoard.board[row][4] = E;
-        if (kingSide) {
+        if (end.getCol() - start.getCol() > 0) {
             newBoard.board[row][7] = E;
             newBoard.board[row][6] = colour * K;
             newBoard.board[row][5] = colour * R;
@@ -101,6 +107,8 @@ public class Board implements Writable {
             newBoard.board[row][2] = colour * K;
             newBoard.board[row][3] = colour * R;
         }
+        newBoard.movedPieces[isW ? 0 : 1] = true;
+        newBoard.movedPieces[end.getCol() - start.getCol() > 0 ? (isW ? 3 : 5) : (isW ? 2 : 4)] = true;
         return newBoard;
     }
 
@@ -202,7 +210,7 @@ public class Board implements Writable {
         for (int k = 0; k < 8; k++) {
             int row = i + knightMoves[k][0];
             int col = j + knightMoves[k][1];
-            if (row >= 0 && row <= 7 && col >= 0 && col <= 7 && board[row][col] == (w ? 1 : -1) * K) {
+            if (Position.isValid(row, col) && board[row][col] == (w ? 1 : -1) * K) {
                 return true;
             }
         }
@@ -216,7 +224,7 @@ public class Board implements Writable {
             for (int k = 1;; k++) {
                 int row = i + bishopDirs[d][0] * k;
                 int col = j + bishopDirs[d][1] * k;
-                if (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
+                if (Position.isValid(row, col)) {
                     if (board[row][col] == (w ? 1 : -1) * K) {
                         return true;
                     } else if (board[row][col] != E) {
@@ -237,7 +245,7 @@ public class Board implements Writable {
             for (int k = 1;; k++) {
                 int row = i + rookDirs[d][0] * k;
                 int col = j + rookDirs[d][1] * k;
-                if (row >= 0 && row <= 7 && col >= 0 && col <= 7) {
+                if (Position.isValid(row, col)) {
                     if (board[row][col] == (w ? 1 : -1) * K) {
                         return true;
                     } else if (board[row][col] != E) {
@@ -262,7 +270,7 @@ public class Board implements Writable {
         for (int k = 0; k < 8; k++) {
             int row = i + kingMoves[k][0];
             int col = j + kingMoves[k][1];
-            if (row >= 0 && row <= 7 && col >= 0 && col <= 7 && board[row][col] == (w ? 1 : -1) * K) {
+            if (Position.isValid(row, col) && board[row][col] == (w ? 1 : -1) * K) {
                 return true;
             }
         }

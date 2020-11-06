@@ -8,6 +8,8 @@ import persistence.Writable;
 
 import java.util.ArrayList;
 
+import static model.board.Board.toNotation;
+
 // Representation of a single move in a chess game
 public class Move implements Writable {
     private final int moveNum;
@@ -124,8 +126,8 @@ public class Move implements Writable {
     // EFFECTS: returns -1 if move is illegal, 1 if move is pawn promotion,
     //          2 if move is castle, 3 if move is en passant, 0 if regular move.
     public int isLegal() {
-        int piece = board.get(start.getRow(), start.getCol());
-        if (board.get(end.getRow(), end.getCol()) * piece > 0 || board.move(start, end).isInCheck(isWhite())) {
+        int piece = board.get(start);
+        if (board.get(end) * piece > 0 || board.move(start, end).isInCheck(isWhite())) {
             return -1;
         }
         int absPiece = Math.abs(piece);
@@ -153,18 +155,26 @@ public class Move implements Writable {
         int er = end.getRow();
         int ec = end.getCol();
         int side = isWhite() ? 1 : -1;
+        int res;
         if (sc == ec) {
-            return pawnForward(sr, er, ec, side);
+            res = pawnForward(sr, er, ec, side);
         } else {
-            return pawnCapture(sr, sc, er, ec, side, parentMove);
+            res = pawnCapture(sr, sc, er, ec, side, parentMove);
         }
+
+        if (res == -1) {
+            return -1;
+        } else if (er == (isWhite() ? 0 : 7)) {
+            return 1;
+        }
+        return res;
     }
 
     // EFFECTS: checks whether pawn can make the move forward
     private int pawnForward(int sr, int er, int ec, int side) {
         if (sr - er == side * 2) {
-            int secondRow = side > 0 ? 6 : 1;
-            if (sr != secondRow || board.get(er, ec) != Board.E || board.get(er - side, ec) != Board.E) {
+            int secondRow = isWhite() ? 6 : 1;
+            if (sr != secondRow || board.get(er, ec) != Board.E || board.get(er + side, ec) != Board.E) {
                 return -1;
             }
         } else if (sr - er == side) {
@@ -174,10 +184,6 @@ public class Move implements Writable {
         } else {
             return -1;
         }
-
-        if (er == (side > 0 ? 0 : 7)) {
-            return 1;
-        }
         return 0;
     }
 
@@ -186,17 +192,17 @@ public class Move implements Writable {
         if (Math.abs(ec - sc) != 1 || sr - er != side) {
             return -1;
         } else if (board.get(er, ec) == Board.E) {
-            if (sr != 3 || board.get(er + 1, ec) != Board.P || pm.getPiece() != Board.P
-                    || pm.getStart().getRow() != 1 || pm.getStart().getCol() != ec
-                    || pm.getEnd().getRow() != 3) {
-                return -1;
-            } else {
+            if (pm != null
+                    && sr == (isWhite() ? 3 : 4)
+                    && board.get(er + side, ec) == -side * Board.P
+                    && pm.getPiece() == -side * Board.P
+                    && pm.getStart().getRow() == (isWhite() ? 1 : 6)
+                    && pm.getStart().getCol() == ec
+                    && pm.getEnd().getRow() == (isWhite() ? 3 : 4)) {
                 return 3;
+            } else {
+                return -1;
             }
-        }
-
-        if (er == (side > 0 ? 0 : 7)) {
-            return 1;
         }
         return 0;
     }
@@ -257,23 +263,33 @@ public class Move implements Writable {
         int er = end.getRow();
         int ec = end.getCol();
         Board b = board;
-        boolean isWhite = piece > 0;
+        boolean isW = isWhite();
         if (er == sr && ec - sc == 2) {
-            if (b.getMoved(isWhite ? 0 : 1) || b.getMoved(isWhite ? 3 : 5)) {
-                return -1;
-            } else if (b.get(er, 5) != Board.E || b.get(er, 6) != Board.E) {
+            if (b.getMoved(isW ? 0 : 1) || b.getMoved(isW ? 3 : 5)
+                    || b.get(er, 5) != Board.E || b.get(er, 6) != Board.E) {
                 return -1;
             }
+            return 2;
         } else if (er == sr && ec - sc == -2) {
-            if (b.getMoved(isWhite ? 0 : 1) || b.getMoved(isWhite ? 2 : 4)) {
-                return -1;
-            } else if (b.get(er, 1) != Board.E || b.get(er, 2) != Board.E || b.get(er, 3) != Board.E) {
+            if (b.getMoved(isW ? 0 : 1) || b.getMoved(isW ? 2 : 4)
+                    || b.get(er, 1) != Board.E || b.get(er, 2) != Board.E || b.get(er, 3) != Board.E) {
                 return -1;
             }
+            return 2;
         } else if (Math.abs(ec - sc) >= 2 || Math.abs(er - sr) >= 2) {
             return -1;
         }
         return 0;
+    }
+
+    public String toChessNotation() {
+        String piece = toNotation[Math.abs(this.piece) - 1];
+        String cap = isCaptures ? "x" : "";
+        String check = isCheck ? "+" : "";
+        if (Math.abs(this.piece) == 1 && isCaptures) {
+            cap = start.toChessNotation().charAt(0) + cap;
+        }
+        return piece + cap + end.toChessNotation() + check;
     }
 
     // EFFECTS: return move as JSON Object

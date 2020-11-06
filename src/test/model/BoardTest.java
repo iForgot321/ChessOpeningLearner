@@ -1,5 +1,6 @@
 package model;
 
+import javafx.geometry.Pos;
 import model.board.Position;
 import model.board.Board;
 import static model.board.Board.*;
@@ -42,6 +43,11 @@ public class BoardTest {
     }
 
     @Test
+    void testGetPosition() {
+        assertEquals(-R, test.get(new Position(0, 0)));
+    }
+
+    @Test
     void testGetMoved() {
         assertFalse(test.getMoved(3));
     }
@@ -62,13 +68,13 @@ public class BoardTest {
 
     @Test
     void testCastle() {
-        Board res = test.castle(false, false);
+        Board res = test.castle(new Position(0, 4), new Position(0, 2));
         assertEquals(E, res.get(0, 0));
         assertEquals(E, res.get(0, 4));
         assertEquals(-K, res.get(0, 2));
         assertEquals(-R, res.get(0, 3));
 
-        res = test.castle(true, true);
+        res = test.castle(new Position(7, 4), new Position(7, 6));
         assertEquals(E, res.get(7, 7));
         assertEquals(E, res.get(7, 4));
         assertEquals(K, res.get(7, 6));
