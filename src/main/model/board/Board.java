@@ -62,9 +62,22 @@ public class Board implements Writable {
         return movedPieces[i];
     }
 
+    // EFFECTS: evaluates type of move and returns board after move performed
+    public Board move(Position start, Position end, int res, int piece) {
+        if (res == 0) {
+            return regularMove(start, end);
+        } else if (res == 1) {
+            return promotePawn(start, end, piece);
+        } else if (res == 2) {
+            return castle(start, end);
+        } else {
+            return enPassant(start, end);
+        }
+    }
+
     // EFFECTS: returns board after move performed, replacing end position with original piece
     //          and start position with empty value
-    public Board move(Position start, Position end) {
+    private Board regularMove(Position start, Position end) {
         Board newBoard = new Board(movedPieces, board);
         int piece = newBoard.board[start.row][start.col];
         newBoard.board[start.row][start.col] = E;
@@ -82,7 +95,7 @@ public class Board implements Writable {
     // REQUIRES: piecePromotedTo is actual piece value
     // EFFECTS: returns board after move performed, replacing end position with promoted piece
     //          and start position with empty value
-    public Board promotePawn(Position start, Position end, int piecePromotedTo) {
+    private Board promotePawn(Position start, Position end, int piecePromotedTo) {
         Board newBoard = new Board(this);
         newBoard.board[start.row][start.col] = E;
         newBoard.board[end.row][end.col] = piecePromotedTo;
@@ -91,7 +104,7 @@ public class Board implements Writable {
 
     // EFFECTS: returns board after castling, replacing end positions with the king and rook
     //          and start positions with empty values
-    public Board castle(Position start, Position end) {
+    private Board castle(Position start, Position end) {
         Board newBoard = new Board(this);
         int row = start.getRow();
         boolean isW = row == 7;
@@ -114,7 +127,7 @@ public class Board implements Writable {
 
     // EFFECTS: returns board after en passant, replacing end position with pawn
     //          and both start position and captured pawn position with empty value
-    public Board enPassant(Position start, Position end) {
+    private Board enPassant(Position start, Position end) {
         Board newBoard = new Board(this);
         int piece = newBoard.board[start.row][start.col];
         newBoard.board[start.row][start.col] = E;

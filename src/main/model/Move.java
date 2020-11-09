@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import persistence.Writable;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static model.board.Board.toNotation;
 
@@ -80,6 +81,16 @@ public class Move implements Writable {
         return childMoves.size();
     }
 
+    // EFFECTS: returns index of move m in childMoves, if does not exist return -1
+    public int getIndexOfChild(Move m) {
+        for (int i = 0; i < childMoves.size(); i++) {
+            if (childMoves.get(i).equals(m)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public int getMoveNum() {
         return moveNum;
     }
@@ -116,9 +127,19 @@ public class Move implements Writable {
         return board;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(moveNum, piece, isCaptures, isCheck, start, end);
+    }
+
     // EFFECTS: returns true if moveNum, isWhite, piece, start, end, and board is equals for both moves, otherwise false
-    public boolean equals(Move m) {
-        return m != null && moveNum == m.moveNum && piece == m.piece && start.equals(m.start) && end.equals(m.end)
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Move)) {
+            return false;
+        }
+        Move m = (Move) o;
+        return moveNum == m.moveNum && piece == m.piece && start.equals(m.start) && end.equals(m.end)
                 && board.equals(m.board);
     }
 
@@ -127,7 +148,7 @@ public class Move implements Writable {
     //          2 if move is castle, 3 if move is en passant, 0 if regular move.
     public int isLegal() {
         int piece = board.get(start);
-        if (board.get(end) * piece > 0 || board.move(start, end).isInCheck(isWhite())) {
+        if (board.get(end) * piece > 0 || board.move(start, end, 0, 0).isInCheck(isWhite())) {
             return -1;
         }
         int absPiece = Math.abs(piece);
@@ -266,13 +287,14 @@ public class Move implements Writable {
         boolean isW = isWhite();
         if (er == sr && ec - sc == 2) {
             if (b.getMoved(isW ? 0 : 1) || b.getMoved(isW ? 3 : 5)
-                    || b.get(er, 5) != Board.E || b.get(er, 6) != Board.E) {
+                    || b.get(er, 5) != Board.E || b.get(er, 6) != Board.E || castleInCheck(true)) {
                 return -1;
             }
             return 2;
         } else if (er == sr && ec - sc == -2) {
             if (b.getMoved(isW ? 0 : 1) || b.getMoved(isW ? 2 : 4)
-                    || b.get(er, 1) != Board.E || b.get(er, 2) != Board.E || b.get(er, 3) != Board.E) {
+                    || b.get(er, 1) != Board.E || b.get(er, 2) != Board.E
+                    || b.get(er, 3) != Board.E || castleInCheck(false)) {
                 return -1;
             }
             return 2;
@@ -282,7 +304,19 @@ public class Move implements Writable {
         return 0;
     }
 
+    private boolean castleInCheck(boolean kingSide) {
+        return false;
+    }
+
+    // EFFECTS: returns move as string int chess notation
     public String toChessNotation() {
+        if (parentMove == null) {
+            return "Opening List";
+        } else if (Math.abs(piece) == Board.K && end.getCol() - start.getCol() == 2) {
+            return "0-0";
+        } else if (Math.abs(piece) == Board.K && end.getCol() - start.getCol() == -2) {
+            return "0-0-0";
+        }
         String piece = toNotation[Math.abs(this.piece) - 1];
         String cap = isCaptures ? "x" : "";
         String check = isCheck ? "+" : "";
@@ -290,6 +324,37 @@ public class Move implements Writable {
             cap = start.toChessNotation().charAt(0) + cap;
         }
         return piece + cap + end.toChessNotation() + check;
+    }
+
+    // EFFECTS: returns entire move line as string in chess notation
+    public String lineToString() {
+        StringBuilder s = new StringBuilder();
+        Move pointer = this;
+        while (pointer.getParentMove() != null) {
+            StringBuilder temp = new StringBuilder(pointer.toChessNotation());
+            s.append(temp.reverse());
+            s.append(" ");
+            if (pointer.isWhite()) {
+                s.append(".");
+                s.append((pointer.getMoveNum() + 1) / 2);
+                s.append("  ");
+            }
+            pointer = pointer.getParentMove();
+        }
+        return s.reverse().toString();
+    }
+
+    public Object[] getPath() {
+        if (parentMove == null) {
+            return null;
+        }
+        Object[] res = new Object[moveNum];
+        Move pointer = parentMove;
+        for (int i = moveNum - 1; i >= 0; i--) {
+            res[i] = pointer;
+            pointer = pointer.parentMove;
+        }
+        return res;
     }
 
     // EFFECTS: return move as JSON Object
@@ -315,5 +380,10 @@ public class Move implements Writable {
             jsonArray.put(child.toJson());
         }
         json.put("childMoves", jsonArray);
+    }
+
+    @Override
+    public String toString() {
+        return toChessNotation();
     }
 }

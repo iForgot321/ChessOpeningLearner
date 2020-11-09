@@ -91,7 +91,7 @@ public class OpeningApp {
                 int newNum = currentMove.getMoveNum() + 1;
                 int newPiece =  currentMove.getBoard().get(start.getRow(), start.getCol());
 
-                Board temp = currentMove.getBoard().move(start, end);
+                Board temp = currentMove.getBoard().move(start, end, 0, 0);
                 boolean cap = currentMove.getBoard().get(end.getRow(), end.getCol()) != E;
                 if (currentMove.addChildMove(new Move(newNum, newPiece, cap, false, start, end, currentMove, temp))) {
                     System.out.println("Move successfully added\n");

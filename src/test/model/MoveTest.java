@@ -106,6 +106,15 @@ public class MoveTest {
     }
 
     @Test
+    void testGetIndexOfChild() {
+        test.addChildMove(test2);
+        test.addChildMove(test3);
+        assertEquals(0, test.getIndexOfChild(test2));
+        assertEquals(1, test.getIndexOfChild(test3));
+        assertEquals(-1, test.getIndexOfChild(test4));
+    }
+
+    @Test
     void testGetMoveNum() {
         assertEquals(1, test2.getMoveNum());
     }
@@ -436,6 +445,7 @@ public class MoveTest {
     void testToChessNotation() {
         assertEquals("e4", test2.toChessNotation());
         assertEquals("Nf3", test4.toChessNotation());
+        assertEquals("Opening List", test.toChessNotation());
     }
 
     @Test
@@ -449,8 +459,8 @@ public class MoveTest {
                 {E, -N, E, E, E, E, E, E},
                 {E, E, E, -B, E, E, E, E}};
         Board test = new Board(new boolean[6], example);
-        Move m = new Move(1, -N, true, false, new Position(6, 1), new Position(4, 0), null, test);
-        Move m2 = new Move(1, P, true, false, new Position(4, 5), new Position(3, 4), null, test);
+        Move m = new Move(1, -N, true, false, new Position(6, 1), new Position(4, 0), test2, test);
+        Move m2 = new Move(1, P, true, false, new Position(4, 5), new Position(3, 4), test2, test);
         assertEquals("Nxa4", m.toChessNotation());
         assertEquals("fxe5", m2.toChessNotation());
     }
@@ -466,10 +476,26 @@ public class MoveTest {
                 {E, E, E, E, Q, E, E, E},
                 {E, E, E, E, E, E, E, E}};
         Board test = new Board(new boolean[6], example);
-        Move m = new Move(1, Q, false, true, new Position(6, 4), new Position(7, 4), null, test);
-        Move m2 = new Move(1, Q, true, true, new Position(6, 4), new Position(3, 4), null, test);
+        Move m = new Move(1, Q, false, true, new Position(6, 4), new Position(7, 4), test2, test);
+        Move m2 = new Move(1, Q, true, true, new Position(6, 4), new Position(3, 4), test2, test);
         assertEquals("Qe1+", m.toChessNotation());
         assertEquals("Qxe5+", m2.toChessNotation());
+    }
+
+    @Test
+    void testLineToString() {
+        int[][] board2 = {{-R, -N, -B, -Q, -K, -B, -N, -R},
+                {-P, -P, -P, -P, E, -P, -P, -P},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, -P, E, E, E},
+                {E, E, E, E, P, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {P, P, P, P, E, P, P, P},
+                {R, N, B, Q, K, B, N, R}};
+        Board b2 = new Board(new boolean[6], board2);
+
+        Move m = new Move(2, -P, false, false, new Position(1, 4), new Position(3, 4), test2, b2);
+        assertEquals("  1. e4 e5", m.lineToString());
     }
 
     @Test

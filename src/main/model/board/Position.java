@@ -3,6 +3,8 @@ package model.board;
 import org.json.JSONObject;
 import persistence.Writable;
 
+import java.util.Objects;
+
 // Row and column values of a piece; uses zero based indexing
 public class Position implements Writable {
     final int col;
@@ -30,11 +32,6 @@ public class Position implements Writable {
         return col;
     }
 
-    // EFFECTS: returns true if all parameters are equal with input p, false otherwise
-    public boolean equals(Position p) {
-        return p != null && getRow() == p.getRow() && getCol() == p.getCol();
-    }
-
     // EFFECTS: returns whether current position is a valid position in chess
     public boolean isValid() {
         return row >= 0 && row <= 7 && col >= 0 && col <= 7;
@@ -43,6 +40,23 @@ public class Position implements Writable {
     // EFFECTS: returns whether row and column are valid
     public static boolean isValid(int row, int col) {
         return row >= 0 && row <= 7 && col >= 0 && col <= 7;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Position position = (Position) o;
+        return col == position.col &&  row == position.row;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(col, row);
     }
 
     // EFFECTS: returns position coordinates into chess notation as a String

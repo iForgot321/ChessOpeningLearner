@@ -54,27 +54,27 @@ public class BoardTest {
 
     @Test
     void testMove() {
-        Board res = test.move(new Position(2, 2), new Position(3, 4));
+        Board res = test.move(new Position(2, 2), new Position(3, 4), 0, 0);
         assertEquals(E, res.get(2, 2));
         assertEquals(-N, res.get(3, 4));
     }
 
     @Test
     void testPromote() {
-        Board res = test.promotePawn(new Position(1, 7), new Position(0, 7), Q);
+        Board res = test.move(new Position(1, 7), new Position(0, 7), 1, Q);
         assertEquals(E, res.get(1, 7));
         assertEquals(Q, res.get(0, 7));
     }
 
     @Test
     void testCastle() {
-        Board res = test.castle(new Position(0, 4), new Position(0, 2));
+        Board res = test.move(new Position(0, 4), new Position(0, 2), 2, 0);
         assertEquals(E, res.get(0, 0));
         assertEquals(E, res.get(0, 4));
         assertEquals(-K, res.get(0, 2));
         assertEquals(-R, res.get(0, 3));
 
-        res = test.castle(new Position(7, 4), new Position(7, 6));
+        res = test.move(new Position(7, 4), new Position(7, 6), 2, 0);
         assertEquals(E, res.get(7, 7));
         assertEquals(E, res.get(7, 4));
         assertEquals(K, res.get(7, 6));
@@ -83,7 +83,7 @@ public class BoardTest {
 
     @Test
     void testEnPassant() {
-        Board res = test.enPassant(new Position(4, 2), new Position(5, 3));
+        Board res = test.move(new Position(4, 2), new Position(5, 3), 3,0);
         assertEquals(E, res.get(4, 2));
         assertEquals(E, res.get(4, 3));
         assertEquals(-P, res.get(5, 3));
