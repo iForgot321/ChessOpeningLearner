@@ -355,6 +355,8 @@ public class GraphicOpeningApp extends JFrame implements ActionListener, WindowL
         if (!currentMove.equals(root)) {
             currentMove = currentMove.getParentMove();
             openMovePath();
+        } else {
+            Toolkit.getDefaultToolkit().beep();
         }
     }
 
@@ -364,6 +366,8 @@ public class GraphicOpeningApp extends JFrame implements ActionListener, WindowL
         if (currentMove.childCount() != 0) {
             currentMove = currentMove.getChildMove(0);
             openMovePath();
+        } else {
+            Toolkit.getDefaultToolkit().beep();
         }
     }
 
