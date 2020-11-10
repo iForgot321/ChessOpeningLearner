@@ -25,7 +25,7 @@ public class BoardTest {
 
     @BeforeEach
     void runBefore() {
-        int[][] board = {{-R, E, E, E, -K, E, E, E},
+        int[][] board = {{-R, E, E, E, -K, E, E, -R},
                 {E, E, E, E, E, E, E, P},
                 {E, E, -N, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
@@ -61,9 +61,15 @@ public class BoardTest {
         Board res2 = test.move(new Position(7, 4), new Position(7, 5), 0, 0);
         Board res3 = test.move(new Position(0, 0), new Position(0, 1), 0, 0);
         Board res4 = test.move(new Position(7, 7), new Position(6, 7), 0, 0);
+        Board res5 = test.move(new Position(0, 4), new Position(0, 5), 0, 0);
+        Board res6 = test.move(new Position(0, 7), new Position(0, 6), 0, 0);
+        Board res7 = test.move(new Position(7, 0), new Position(7, 1), 0, 0);
         assertTrue(res2.getMoved(0));
+        assertTrue(res5.getMoved(1));
         assertTrue(res3.getMoved(4));
         assertTrue(res4.getMoved(3));
+        assertTrue(res6.getMoved(5));
+        assertTrue(res7.getMoved(2));
     }
 
     @Test
@@ -74,18 +80,33 @@ public class BoardTest {
     }
 
     @Test
-    void testCastle() {
-        Board res = test.move(new Position(0, 4), new Position(0, 2), 2, 0);
-        assertEquals(E, res.get(0, 0));
+    void testCastleKingSide() {
+        Board res = test.move(new Position(0, 4), new Position(0, 6), 2, 0);
+        assertEquals(E, res.get(0, 7));
         assertEquals(E, res.get(0, 4));
-        assertEquals(-K, res.get(0, 2));
-        assertEquals(-R, res.get(0, 3));
+        assertEquals(-K, res.get(0, 6));
+        assertEquals(-R, res.get(0, 5));
 
         res = test.move(new Position(7, 4), new Position(7, 6), 2, 0);
         assertEquals(E, res.get(7, 7));
         assertEquals(E, res.get(7, 4));
         assertEquals(K, res.get(7, 6));
         assertEquals(R, res.get(7, 5));
+    }
+
+    @Test
+    void testCastleQueenSide() {
+        Board res = test.move(new Position(0, 4), new Position(0, 2), 2, 0);
+        assertEquals(E, res.get(0, 1));
+        assertEquals(E, res.get(0, 4));
+        assertEquals(-K, res.get(0, 2));
+        assertEquals(-R, res.get(0, 3));
+
+        res = test.move(new Position(7, 4), new Position(7, 2), 2, 0);
+        assertEquals(E, res.get(7, 1));
+        assertEquals(E, res.get(7, 4));
+        assertEquals(K, res.get(7, 2));
+        assertEquals(R, res.get(7, 3));
     }
 
     @Test

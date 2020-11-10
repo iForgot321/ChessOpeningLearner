@@ -429,19 +429,21 @@ public class MoveTest {
                 {E, E, E, P, P, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {P, P, P, E, E, P, P, E},
-                {R, N, B, Q, K, B, N, R}};
+                {R, N, B, Q, K, E, E, E}};
         Board b = new Board(new boolean[6], board);
         Move m = new Move(1, K, false, false, new Position(7, 4), new Position(6, 3), null, b);
         Move m2 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 3), null, b);
         Move m3 = new Move(1, K, false, false, new Position(7, 4), new Position(5, 4), null, b);
+        Move m4 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 7), null, b);
         assertEquals(0, m.isLegal());
         assertEquals(-1, m2.isLegal());
         assertEquals(-1, m3.isLegal());
+        assertEquals(-1, m4.isLegal());
     }
 
     @Test
     void testCastle() {
-        int[][] board = {{-R, E, E, E, -K, -B, E, -R},
+        int[][] board = {{-R, E, E, E, -K, E, E, -R},
                 {-P, -P, -P, -P, -P, -P, -P, -P},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
@@ -449,16 +451,48 @@ public class MoveTest {
                 {E, E, E, E, E, E, E, E},
                 {P, P, P, E, E, P, P, E},
                 {R, E, E, E, K, E, E, R}};
-        boolean[] moved = {false, false, true, false, false, false};
-        Board b = new Board(moved, board);
-        Move m = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b);
+        int[][] board2 = {{-R, E, E, -P, -K, -P, E, -R},
+                {-P, -P, -P, -P, -P, -P, -P, -P},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, P, P, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {P, P, P, E, E, P, P, E},
+                {R, E, E, B, K, P, E, R}};
+        int[][] board3 = {{-R, E, -P, E, -K, E, -P, -R},
+                {-P, -P, -P, -P, -P, -P, -P, -P},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, P, P, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {P, P, P, E, E, P, P, E},
+                {R, E, P, E, K, E, P, R}};
+        boolean[] moved = {true, true, true, false, false, false};
+        boolean[] moved2 = {true, false, true, true, true, true};
+        Board b = new Board(new boolean[6], board);
+        Board b2 = new Board(moved, board);
+        Board b3 = new Board(moved2, board);
+        Board b4 = new Board(new boolean[6], board2);
+        Board b5 = new Board(new boolean[6], board3);
         Move m2 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), null, b);
         Move m3 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b);
         Move m4 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b);
-        assertEquals(2, m.isLegal());
-        assertEquals(-1, m2.isLegal());
+        Move m5 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b2);
+        Move m6 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), null, b2);
+        Move m11 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b3);
+        Move m12 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b3);
+        Move m15 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b4);
+        Move m16 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b4);
+        assertEquals(2, m2.isLegal());
         assertEquals(2, m3.isLegal());
-        assertEquals(-1, m4.isLegal());
+        assertEquals(2, m4.isLegal());
+        assertEquals(-1, m5.isLegal());
+        assertEquals(-1, m6.isLegal());
+        assertEquals(-1, m11.isLegal());
+        assertEquals(-1, m12.isLegal());
+        assertEquals(-1, m15.isLegal());
+        assertEquals(-1, m16.isLegal());
+
     }
 
     @Test
@@ -519,12 +553,14 @@ public class MoveTest {
         Board b = new Board(new boolean[6], board);
         Move m = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), test, b);
         Move m2 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), test, b);
+        Move m3 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 3), test, b);
 
         assertEquals("e4", test2.toChessNotation());
         assertEquals("Nf3", test4.toChessNotation());
         assertEquals("Opening List", test.toChessNotation());
         assertEquals("0-0", m.toChessNotation());
         assertEquals("0-0-0", m2.toChessNotation());
+        assertEquals("Kd1", m3.toChessNotation());
 
         assertEquals("e4", test2.toString());
         assertEquals("Nf3", test4.toString());
