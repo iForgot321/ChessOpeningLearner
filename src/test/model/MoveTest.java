@@ -244,8 +244,8 @@ public class MoveTest {
     void testPawnIsLegal() {
         int[][] board = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, -P, -P, -P, E, -P},
-                {E, E, E, E, E, E, E, E},
-                {E, E, E, E, E, E, E, E},
+                {E, P, E, E, E, E, E, E},
+                {P, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {E, P, E, E, E, E, -P, E},
                 {P, E, P, P, P, P, P, P},
@@ -258,6 +258,8 @@ public class MoveTest {
         Move m5 = new Move(1, -P, false, false, new Position(5, 6), new Position(6, 6), null, b);
         Move m6 = new Move(1, -P, false, false, new Position(1, 4), new Position(3, 4), null, b);
         Move m7 = new Move(1, -P, false, false, new Position(1, 4), new Position(4, 4), null, b);
+        Move m8 = new Move(1, -P, false, false, new Position(1, 0), new Position(3, 0), null, b);
+        Move m9 = new Move(1, -P, false, false, new Position(1, 1), new Position(3, 1), null, b);
         assertEquals(0, m.isLegal());
         assertEquals(0, m2.isLegal());
         assertEquals(0, m3.isLegal());
@@ -265,6 +267,8 @@ public class MoveTest {
         assertEquals(-1, m5.isLegal());
         assertEquals(0, m6.isLegal());
         assertEquals(-1, m7.isLegal());
+        assertEquals(-1, m8.isLegal());
+        assertEquals(-1, m9.isLegal());
     }
 
     @Test
@@ -282,10 +286,12 @@ public class MoveTest {
         Move m2 = new Move(1, -P, true, false, new Position(3, 3), new Position(4, 4), null, b);
         Move m3 = new Move(1, P, false, false, new Position(4, 4), new Position(3, 6), null, b);
         Move m4 = new Move(1, -P, false, false, new Position(3, 3), new Position(4, 2), null, b);
+        Move m5 = new Move(1, -P, false, false, new Position(3, 3), new Position(5, 2), null, b);
         assertEquals(0, m.isLegal());
         assertEquals(0, m2.isLegal());
         assertEquals(-1, m3.isLegal());
         assertEquals(-1, m4.isLegal());
+        assertEquals(-1, m5.isLegal());
     }
 
     @Test
@@ -321,8 +327,21 @@ public class MoveTest {
         Move before = new Move(1, -P, false, false, new Position(1, 3), new Position(3, 3), null, b);
         Move m = new Move(2, P, false, false, new Position(3, 4), new Position(2, 3), before, b);
         Move m2 = new Move(2, P, false, false, new Position(3, 6), new Position(2, 7), before, b);
+        Move m4 = new Move(2, P, false, false, new Position(6, 5), new Position(5, 4), before, b);
+        Move m5 = new Move(2, P, false, false, new Position(3, 6), new Position(2, 5), before, b);
+        Move wrongBefore = new Move(1, -K, false, false, new Position(1, 3), new Position(3, 3), null, b);
+        Move m6 = new Move(2, P, false, false, new Position(3, 4), new Position(2, 3), wrongBefore, b);
+        Move wrongBefore2 = new Move(1, -P, false, false, new Position(2, 3), new Position(3, 3), null, b);
+        Move m7 = new Move(2, P, false, false, new Position(3, 4), new Position(2, 3), wrongBefore2, b);
+        Move wrongBefore3 = new Move(1, -P, false, false, new Position(1, 3), new Position(4, 3), null, b);
+        Move m8 = new Move(2, P, false, false, new Position(3, 4), new Position(2, 3), wrongBefore3, b);
         assertEquals(3, m.isLegal());
         assertEquals(-1, m2.isLegal());
+        assertEquals(-1, m4.isLegal());
+        assertEquals(-1, m5.isLegal());
+        assertEquals(-1, m6.isLegal());
+        assertEquals(-1, m7.isLegal());
+        assertEquals(-1, m8.isLegal());
 
         int[][] board2 = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, E, -P, -P, -P, -P},
@@ -380,14 +399,14 @@ public class MoveTest {
 
     @Test
     void testRookIsLegal() {
-        int[][] board = {{-R, -N, -B, -Q, -K, -B, -N, -R},
-                {-P, -P, -P, -P, -P, -P, -P, -P},
+        int[][] board = {{-R, E, E, E, E, E, E, -R},
+                {E, E, E, E, E, E, E, -P},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
-                {P, P, P, P, P, P, P, E},
-                {R, N, B, Q, K, B, N, R}};
+                {E, E, E, E, E, E, E, E},
+                {R, E, E, E, E, E, E, R}};
         Board b = new Board(new boolean[6], board);
         Move m = new Move(1, R, false, false, new Position(7, 7), new Position(1, 7), null, b);
         Move m2 = new Move(1, R, false, false, new Position(7, 7), new Position(0, 7), null, b);
@@ -395,7 +414,7 @@ public class MoveTest {
         Move m4 = new Move(1, R, false, false, new Position(7, 7), new Position(5, 6), null, b);
         assertEquals(0, m.isLegal());
         assertEquals(-1, m2.isLegal());
-        assertEquals(-1, m3.isLegal());
+        assertEquals(0, m3.isLegal());
         assertEquals(-1, m4.isLegal());
     }
 
@@ -513,14 +532,25 @@ public class MoveTest {
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, R, K, E, E, R}};
+        int[][] board3 = {{-R, E, E, E, -K, -R, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, R, E, K, E, E, R}};
         Board b = new Board(new boolean[6], board);
         Board b2 = new Board(new boolean[6], board2);
+        Board b3 = new Board(new boolean[6], board3);
         Move m = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b);
         Move m2 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b);
         Move m3 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b2);
+        Move m4 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b);
         assertEquals(-1, m.isLegal());
         assertEquals(-1, m2.isLegal());
         assertEquals(-1, m3.isLegal());
+        assertEquals(-1, m4.isLegal());
     }
 
     @Test

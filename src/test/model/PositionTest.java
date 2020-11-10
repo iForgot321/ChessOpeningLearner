@@ -31,6 +31,7 @@ public class PositionTest {
         assertNotEquals(pos3, pos);
         assertNotEquals(pos4, pos);
         assertNotEquals(pos, null);
+        assertNotEquals(pos, new Object());
     }
 
     @Test
@@ -60,13 +61,17 @@ public class PositionTest {
         assertTrue(pos.isValid());
         assertFalse(new Position(-1, 5).isValid());
         assertFalse(new Position(5, 10).isValid());
+        assertFalse(new Position(10, 5).isValid());
+        assertFalse(new Position(5, -1).isValid());
     }
 
     @Test
     void testIsValidRowCol() {
         assertTrue(Position.isValid(5, 4));
         assertFalse(Position.isValid(10, 5));
+        assertFalse(Position.isValid(-1, 5));
         assertFalse(Position.isValid(5, -1));
+        assertFalse(Position.isValid(5, 10));
     }
 
     @Test

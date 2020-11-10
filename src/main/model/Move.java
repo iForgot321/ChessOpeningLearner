@@ -150,7 +150,10 @@ public class Move implements Writable {
             return false;
         }
         Move m = (Move) o;
-        return moveNum == m.moveNum && piece == m.piece && start.equals(m.start) && end.equals(m.end)
+        return moveNum == m.moveNum
+                && piece == m.piece
+                && start.equals(m.start)
+                && end.equals(m.end)
                 && board.equals(m.board);
     }
 
@@ -212,7 +215,9 @@ public class Move implements Writable {
     private int pawnForward(int sr, int er, int ec, int side) {
         if (sr - er == side * 2) {
             int secondRow = isWhite() ? 6 : 1;
-            if (sr != secondRow || board.get(er, ec) != Board.E || board.get(er + side, ec) != Board.E) {
+            if (sr != secondRow
+                    || board.get(er, ec) != Board.E
+                    || board.get(er + side, ec) != Board.E) {
                 return -1;
             }
         } else if (sr - er == side) {
@@ -291,7 +296,8 @@ public class Move implements Writable {
 
     // EFFECTS: checks whether queen move is legal
     private int queenMove() {
-        return bishopMove() == 0 || rookMove() == 0 ? 0 : -1;
+        return bishopMove() == 0
+                || rookMove() == 0 ? 0 : -1;
     }
 
     // EFFECTS: checks whether king move is legal
@@ -303,15 +309,21 @@ public class Move implements Writable {
         Board b = board;
         boolean isW = isWhite();
         if (er == sr && ec - sc == 2) {
-            if (b.getMoved(isW ? 0 : 1) || b.getMoved(isW ? 3 : 5)
-                    || b.get(er, 5) != Board.E || b.get(er, 6) != Board.E || castleInCheck(true)) {
+            if (b.getMoved(isW ? 0 : 1)
+                    || b.getMoved(isW ? 3 : 5)
+                    || b.get(er, 5) != Board.E
+                    || b.get(er, 6) != Board.E
+                    || castleInCheck(true)) {
                 return -1;
             }
             return 2;
         } else if (er == sr && ec - sc == -2) {
-            if (b.getMoved(isW ? 0 : 1) || b.getMoved(isW ? 2 : 4)
-                    || b.get(er, 1) != Board.E || b.get(er, 2) != Board.E
-                    || b.get(er, 3) != Board.E || castleInCheck(false)) {
+            if (b.getMoved(isW ? 0 : 1)
+                    || b.getMoved(isW ? 2 : 4)
+                    || b.get(er, 1) != Board.E
+                    || b.get(er, 2) != Board.E
+                    || b.get(er, 3) != Board.E
+                    || castleInCheck(false)) {
                 return -1;
             }
             return 2;

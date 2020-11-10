@@ -77,7 +77,7 @@ public class Position implements Writable {
             int row = 8 - Integer.parseInt(sa[1]);
             int col = sa[0].charAt(0) - 'a';
 
-            if (row <= 7 && row >= 0 && col <= 7 && col >= 0) {
+            if (isValid(row, col)) {
                 return new Position(row, col);
             } else {
                 return null;
