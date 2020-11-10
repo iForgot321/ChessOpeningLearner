@@ -296,8 +296,8 @@ public class Move implements Writable {
 
     // EFFECTS: checks whether queen move is legal
     private int queenMove() {
-        return bishopMove() == 0
-                || rookMove() == 0 ? 0 : -1;
+        return (bishopMove() == 0
+                || rookMove() == 0) ? 0 : -1;
     }
 
     // EFFECTS: checks whether king move is legal
@@ -309,21 +309,14 @@ public class Move implements Writable {
         Board b = board;
         boolean isW = isWhite();
         if (er == sr && ec - sc == 2) {
-            if (b.getMoved(isW ? 0 : 1)
-                    || b.getMoved(isW ? 3 : 5)
-                    || b.get(er, 5) != Board.E
-                    || b.get(er, 6) != Board.E
-                    || castleInCheck(true)) {
+            if (b.getMoved(isW ? 0 : 1) || b.getMoved(isW ? 3 : 5) || b.get(er, 5) != Board.E
+                    || b.get(er, 6) != Board.E || castleInCheck(true)) {
                 return -1;
             }
             return 2;
         } else if (er == sr && ec - sc == -2) {
-            if (b.getMoved(isW ? 0 : 1)
-                    || b.getMoved(isW ? 2 : 4)
-                    || b.get(er, 1) != Board.E
-                    || b.get(er, 2) != Board.E
-                    || b.get(er, 3) != Board.E
-                    || castleInCheck(false)) {
+            if (b.getMoved(isW ? 0 : 1) || b.getMoved(isW ? 2 : 4) || b.get(er, 1) != Board.E
+                    || b.get(er, 2) != Board.E || b.get(er, 3) != Board.E || castleInCheck(false)) {
                 return -1;
             }
             return 2;
@@ -341,8 +334,7 @@ public class Move implements Writable {
         if (kingSide) {
             return board.move(start, new Position(end.getRow(), start.getCol() + 1), 0, piece).isInCheck(isWhite());
         } else {
-            return board.move(start, new Position(end.getRow(), start.getCol() - 1), 0, piece).isInCheck(isWhite())
-                    || board.move(start, new Position(end.getRow(), start.getCol() - 2), 0, piece).isInCheck(isWhite());
+            return board.move(start, new Position(end.getRow(), start.getCol() - 1), 0, piece).isInCheck(isWhite());
         }
     }
 

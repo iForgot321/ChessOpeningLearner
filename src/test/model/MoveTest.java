@@ -260,6 +260,7 @@ public class MoveTest {
         Move m7 = new Move(1, -P, false, false, new Position(1, 4), new Position(4, 4), null, b);
         Move m8 = new Move(1, -P, false, false, new Position(1, 0), new Position(3, 0), null, b);
         Move m9 = new Move(1, -P, false, false, new Position(1, 1), new Position(3, 1), null, b);
+        Move m10 = new Move(1, -P, false, false, new Position(6, 6), new Position(5, 6), null, b);
         assertEquals(0, m.isLegal());
         assertEquals(0, m2.isLegal());
         assertEquals(0, m3.isLegal());
@@ -269,6 +270,7 @@ public class MoveTest {
         assertEquals(-1, m7.isLegal());
         assertEquals(-1, m8.isLegal());
         assertEquals(-1, m9.isLegal());
+        assertEquals(-1, m10.isLegal());
     }
 
     @Test
@@ -478,39 +480,55 @@ public class MoveTest {
                 {E, E, E, E, E, E, E, E},
                 {P, P, P, E, E, P, P, E},
                 {R, E, E, B, K, P, E, R}};
-        int[][] board3 = {{-R, E, -P, E, -K, E, -P, -R},
+        int[][] board3 = {{-R, E, N, E, -K, E, N, -R},
                 {-P, -P, -P, -P, -P, -P, -P, -P},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, P, P, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {P, P, P, E, E, P, P, E},
-                {R, E, P, E, K, E, P, R}};
+                {R, E, -N, E, K, E, -N, R}};
+        int[][] board4 = {{-R, -P, E, E, -K, E, -P, -R},
+                {-P, -P, -P, -P, -P, -P, -P, -P},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, P, P, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {P, P, P, E, E, P, P, E},
+                {R, P, E, E, K, E, P, R}};
         boolean[] moved = {true, true, true, false, false, false};
         boolean[] moved2 = {true, false, true, true, true, true};
+
         Board b = new Board(new boolean[6], board);
         Board b2 = new Board(moved, board);
         Board b3 = new Board(moved2, board);
         Board b4 = new Board(new boolean[6], board2);
         Board b5 = new Board(new boolean[6], board3);
-        Move m2 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), null, b);
-        Move m3 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b);
-        Move m4 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b);
-        Move m5 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b2);
-        Move m6 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), null, b2);
-        Move m11 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b3);
-        Move m12 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b3);
-        Move m15 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b4);
-        Move m16 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b4);
+        Board b6 = new Board(new boolean[6], board4);
+
+        Move m1 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), null, b);
+        Move m2 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b);
+        Move m3 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b2);
+        Move m4 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), null, b2);
+        Move m5 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b5);
+        Move m6 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b5);
+        Move m7 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), null, b6);
+        Move m8 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b3);
+        Move m9 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b3);
+        Move m10 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b4);
+        Move m11 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 6), null, b4);
+
+        assertEquals(2, m1.isLegal());
         assertEquals(2, m2.isLegal());
-        assertEquals(2, m3.isLegal());
-        assertEquals(2, m4.isLegal());
+        assertEquals(-1, m3.isLegal());
+        assertEquals(-1, m4.isLegal());
         assertEquals(-1, m5.isLegal());
         assertEquals(-1, m6.isLegal());
+        assertEquals(-1, m7.isLegal());
+        assertEquals(-1, m8.isLegal());
+        assertEquals(-1, m9.isLegal());
+        assertEquals(-1, m10.isLegal());
         assertEquals(-1, m11.isLegal());
-        assertEquals(-1, m12.isLegal());
-        assertEquals(-1, m15.isLegal());
-        assertEquals(-1, m16.isLegal());
 
     }
 
@@ -532,17 +550,8 @@ public class MoveTest {
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, R, K, E, E, R}};
-        int[][] board3 = {{-R, E, E, E, -K, -R, E, E},
-                {E, E, E, E, E, E, E, E},
-                {E, E, E, E, E, E, E, E},
-                {E, E, E, E, E, E, E, E},
-                {E, E, E, E, E, E, E, E},
-                {E, E, E, E, E, E, E, E},
-                {E, E, E, E, E, E, E, E},
-                {E, E, R, E, K, E, E, R}};
         Board b = new Board(new boolean[6], board);
         Board b2 = new Board(new boolean[6], board2);
-        Board b3 = new Board(new boolean[6], board3);
         Move m = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b);
         Move m2 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b);
         Move m3 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b2);
