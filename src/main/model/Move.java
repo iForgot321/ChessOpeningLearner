@@ -296,7 +296,6 @@ public class Move implements Writable {
 
     // EFFECTS: checks whether queen move is legal
     private int queenMove() {
-        System.out.println((bishopMove() == 0) + " " + (rookMove() == 0));
         return (bishopMove() == 0
                 || rookMove() == 0) ? 0 : -1;
     }
