@@ -54,6 +54,16 @@ public class BoardTest {
 
     @Test
     void testMove() {
+        int[][] board = {{-R, E, E, E, -K, E, E, -R},
+                {E, E, E, E, E, E, E, P},
+                {E, E, -N, E, E, E, E, E},
+                {E, E, R, E, E, E, E, E},
+                {E, E, -P, P, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {P, P, P, E, P, P, P, P},
+                {R, E, E, E, K, E, E, R}};
+        boolean[] moved = new boolean[6];
+        test = new Board(moved, board);
         Board res = test.move(new Position(2, 2), new Position(3, 4), 0, 0);
         assertEquals(E, res.get(2, 2));
         assertEquals(-N, res.get(3, 4));
@@ -64,12 +74,14 @@ public class BoardTest {
         Board res5 = test.move(new Position(0, 4), new Position(0, 5), 0, 0);
         Board res6 = test.move(new Position(0, 7), new Position(0, 6), 0, 0);
         Board res7 = test.move(new Position(7, 0), new Position(7, 1), 0, 0);
+        Board res8 = test.move(new Position(3, 2), new Position(3, 3), 0, 0);
         assertTrue(res2.getMoved(0));
         assertTrue(res5.getMoved(1));
         assertTrue(res3.getMoved(4));
         assertTrue(res4.getMoved(3));
         assertTrue(res6.getMoved(5));
         assertTrue(res7.getMoved(2));
+        assertFalse(res8.getMoved(2));
     }
 
     @Test

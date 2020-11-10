@@ -433,12 +433,10 @@ public class MoveTest {
         Board b = new Board(new boolean[6], board);
         Move m = new Move(1, Q, false, false, new Position(4, 3), new Position(1, 3), null, b);
         Move m2 = new Move(1, Q, false, false, new Position(4, 3), new Position(1, 0), null, b);
-        Move m3 = new Move(1, Q, false, false, new Position(4, 3), new Position(7, 4), null, b);
-        Move m4 = new Move(1, Q, false, false, new Position(4, 3), new Position(6, 1), null, b);
+        Move m3 = new Move(1, Q, false, false, new Position(4, 3), new Position(5, 6), null, b);
         assertEquals(0, m.isLegal());
         assertEquals(0, m2.isLegal());
         assertEquals(-1, m3.isLegal());
-        assertEquals(-1, m4.isLegal());
     }
 
     @Test
