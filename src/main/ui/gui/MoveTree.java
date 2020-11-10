@@ -7,9 +7,8 @@ import javax.swing.tree.TreeSelectionModel;
 
 // Code adapted from GenealogyExample from Oracle java tutorials
 public class MoveTree extends JTree {
-    MoveModel model;
 
-    // EFFECTS: creates and initializes new move tree
+    // EFFECTS: creates and initializes new MoveTree with root move
     public MoveTree(Move parentNode) {
         super(new MoveModel(parentNode));
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);

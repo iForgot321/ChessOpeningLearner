@@ -5,7 +5,7 @@ import persistence.Writable;
 
 import java.util.Objects;
 
-// Row and column values of a piece; uses zero based indexing
+// Chess position on a 2d array
 public class Position implements Writable {
     final int col;
     final int row;
@@ -42,6 +42,7 @@ public class Position implements Writable {
         return row >= 0 && row <= 7 && col >= 0 && col <= 7;
     }
 
+    // EFFECTS: returns true if both positions have equal parameters
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -54,6 +55,7 @@ public class Position implements Writable {
         return col == position.col &&  row == position.row;
     }
 
+    // EFFECTS: hashcode based on parameters
     @Override
     public int hashCode() {
         return Objects.hash(col, row);

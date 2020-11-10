@@ -8,6 +8,7 @@ import javax.swing.tree.TreePath;
 import java.util.ArrayList;
 import java.util.List;
 
+// Implementation of TreeModel to fit Move.java
 // Code adapted from GenealogyExample from Oracle java tutorials
 public class MoveModel implements TreeModel {
     private List<TreeModelListener> treeModelListeners = new ArrayList<>();
@@ -33,7 +34,7 @@ public class MoveModel implements TreeModel {
     // EFFECTS: returns number of children in parent
     public int getChildCount(Object parent) {
         Move m = (Move)parent;
-        return m.length();
+        return m.childCount();
     }
 
     // EFFECTS: returns the index of child in parent
@@ -47,10 +48,15 @@ public class MoveModel implements TreeModel {
         return rootMove;
     }
 
+    // EFFECTS: sets new root for the tree
+    public void setRoot(Move move) {
+        rootMove = move;
+    }
+
     // EFFECTS: returns true if node is a leaf.
     public boolean isLeaf(Object node) {
         Move m = (Move)node;
-        return m.length() == 0;
+        return m.childCount() == 0;
     }
 
     // MODIFIES: this

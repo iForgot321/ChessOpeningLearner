@@ -79,14 +79,14 @@ public class MoveTest {
         Board b2 = new Board(new boolean[6], board2);
         Move m = new Move(1, P, false, false, new Position(6, 4), new Position(4, 4), test, b2);
 
-        assertTrue(test.getChildMove(0).equals(m));
+        assertEquals(m, test.getChildMove(0));
     }
 
     @Test
     void testAddMove() {
         assertTrue(test.addChildMove(test2));
         assertTrue(test.addChildMove(test3));
-        assertEquals(2, test.length());
+        assertEquals(2, test.childCount());
         assertFalse(test.addChildMove(test3));
 
         assertTrue(test.addChildMove(test4));
@@ -97,12 +97,12 @@ public class MoveTest {
     void testRemoveMove() {
         test.addChildMove(test2);
         test.removeChildMove(0);
-        assertEquals(0, test.length());
+        assertEquals(0, test.childCount());
     }
 
     @Test
     void testLength() {
-        assertEquals(0, test.length());
+        assertEquals(0, test.childCount());
     }
 
     @Test
@@ -142,12 +142,12 @@ public class MoveTest {
 
     @Test
     void testGetStart() {
-        assertTrue(test2.getStart().equals(new Position(6, 4)));
+        assertEquals(new Position(6, 4), test2.getStart());
     }
 
     @Test
     void testGetEnd() {
-        assertTrue(test2.getEnd().equals(new Position(4, 4)));
+        assertEquals(new Position(4, 4), test2.getEnd());
     }
 
     @Test
@@ -163,7 +163,7 @@ public class MoveTest {
         Board b = new Board(new boolean[6], board);
         Move m = new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, b);
 
-        assertTrue(test2.getParentMove().equals(m));
+        assertEquals(m, test2.getParentMove());
     }
 
     @Test
@@ -195,14 +195,14 @@ public class MoveTest {
 
         test.addChildMove(test2);
         Move m = new Move(test);
-        assertTrue(test.equals(m));
+        assertEquals(m, test);
 
-        assertFalse(test.equals(null));
-        assertFalse(test.equals(test2));
-        assertFalse(test.equals(new Move(0, K, false, false, new Position(-1, -1), new Position(-1, -1), null, b)));
-        assertFalse(test.equals(new Move(0, 0, false, false, new Position(-2, -1), new Position(-1, -1), null, b)));
-        assertFalse(test.equals(new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -2), null, b)));
-        assertFalse(test.equals(new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, null)));
+        assertNotEquals(test, null);
+        assertNotEquals(test2, test);
+        assertNotEquals(new Move(0, K, false, false, new Position(-1, -1), new Position(-1, -1), null, b), test);
+        assertNotEquals(new Move(0, 0, false, false, new Position(-2, -1), new Position(-1, -1), null, b), test);
+        assertNotEquals(new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -2), null, b), test);
+        assertNotEquals(test, new Move(0, 0, false, false, new Position(-1, -1), new Position(-1, -1), null, null));
     }
 
     @Test
@@ -425,6 +425,23 @@ public class MoveTest {
     }
 
     @Test
+    void testCastleInCheck() {
+        int[][] board = {{-R, E, E, E, -K, -R, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, R, K, E, E, R}};
+        Board b = new Board(new boolean[6], board);
+        Move m = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b);
+        Move m2 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b);
+        assertEquals(-1, m.isLegal());
+        assertEquals(-1, m2.isLegal());
+    }
+
+    @Test
     void testIllegalMoveInCheck() {
         int[][] board = {{E, -K, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
@@ -505,6 +522,6 @@ public class MoveTest {
         assertEquals(test.getMoveNum(), json.getInt("moveNum"));
         assertEquals(test.getPiece(), json.getInt("piece"));
         assertEquals(test.isCaptures(), json.getBoolean("isCaptures"));
-        assertEquals(test.length(), json.getJSONArray("childMoves").length());
+        assertEquals(test.childCount(), json.getJSONArray("childMoves").length());
     }
 }

@@ -61,7 +61,7 @@ public class Move implements Writable {
     // EFFECTS: adds move to list and returns true, false if move is already in list
     public boolean addChildMove(Move m) {
         for (Move i : childMoves) {
-            if (m.getPiece() == i.getPiece() && m.getEnd().equals(i.getEnd())) {
+            if (m.getStart().equals(i.getStart()) && m.getEnd().equals(i.getEnd())) {
                 return false;
             }
         }
@@ -76,8 +76,14 @@ public class Move implements Writable {
         childMoves.remove(i);
     }
 
+    // MODIFIES: this
+    // EFFECTS: removes move m from list if exists
+    public void removeChildMove(Move m) {
+        childMoves.remove(m);
+    }
+
     // EFFECTS: returns number of moves in list of children moves
-    public int length() {
+    public int childCount() {
         return childMoves.size();
     }
 
@@ -85,6 +91,16 @@ public class Move implements Writable {
     public int getIndexOfChild(Move m) {
         for (int i = 0; i < childMoves.size(); i++) {
             if (childMoves.get(i).equals(m)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // EFFECTS: returns index of move m from start and end positions in childMoves, if does not exist return -1
+    public int getIndexOfChild(Position start, Position end) {
+        for (int i = 0; i < childMoves.size(); i++) {
+            if (childMoves.get(i).start.equals(start) && childMoves.get(i).end.equals(end)) {
                 return i;
             }
         }
@@ -127,11 +143,6 @@ public class Move implements Writable {
         return board;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(moveNum, piece, isCaptures, isCheck, start, end);
-    }
-
     // EFFECTS: returns true if moveNum, isWhite, piece, start, end, and board is equals for both moves, otherwise false
     @Override
     public boolean equals(Object o) {
@@ -141,6 +152,12 @@ public class Move implements Writable {
         Move m = (Move) o;
         return moveNum == m.moveNum && piece == m.piece && start.equals(m.start) && end.equals(m.end)
                 && board.equals(m.board);
+    }
+
+    // EFFECTS: creates hashcode based on parameters
+    @Override
+    public int hashCode() {
+        return Objects.hash(moveNum, piece, isCaptures, isCheck, start, end);
     }
 
     // REQUIRES: board represents chess state before move made
@@ -304,8 +321,17 @@ public class Move implements Writable {
         return 0;
     }
 
+    // EFFECTS: returns whether or not king would be in check at any point in the castle
     private boolean castleInCheck(boolean kingSide) {
-        return false;
+        if (board.isInCheck(isWhite())) {
+            return true;
+        }
+        if (kingSide) {
+            return board.move(start, new Position(end.getRow(), start.getCol() + 1), 0, piece).isInCheck(isWhite());
+        } else {
+            return board.move(start, new Position(end.getRow(), start.getCol() - 1), 0, piece).isInCheck(isWhite())
+                    || board.move(start, new Position(end.getRow(), start.getCol() - 2), 0, piece).isInCheck(isWhite());
+        }
     }
 
     // EFFECTS: returns move as string int chess notation
@@ -344,13 +370,14 @@ public class Move implements Writable {
         return s.reverse().toString();
     }
 
+    // EFFECTS: creates object array of the path to get to move from root
     public Object[] getPath() {
         if (parentMove == null) {
             return null;
         }
-        Object[] res = new Object[moveNum];
-        Move pointer = parentMove;
-        for (int i = moveNum - 1; i >= 0; i--) {
+        Object[] res = new Object[moveNum + 1];
+        Move pointer = this;
+        for (int i = moveNum; i >= 0; i--) {
             res[i] = pointer;
             pointer = pointer.parentMove;
         }
@@ -382,6 +409,7 @@ public class Move implements Writable {
         json.put("childMoves", jsonArray);
     }
 
+    // EFFECTS: returns move in chess notation
     @Override
     public String toString() {
         return toChessNotation();

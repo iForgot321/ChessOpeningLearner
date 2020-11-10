@@ -95,7 +95,7 @@ public class OpeningApp {
                 boolean cap = currentMove.getBoard().get(end.getRow(), end.getCol()) != E;
                 if (currentMove.addChildMove(new Move(newNum, newPiece, cap, false, start, end, currentMove, temp))) {
                     System.out.println("Move successfully added\n");
-                    currentMove = currentMove.getChildMove(currentMove.length() - 1);
+                    currentMove = currentMove.getChildMove(currentMove.childCount() - 1);
                 } else {
                     System.out.println("Move already exists\n");
                 }
@@ -115,7 +115,7 @@ public class OpeningApp {
             String input = scan.next();
             try {
                 int i = Integer.parseInt(input) - 1;
-                if (i >= 0 && i < currentMove.length()) {
+                if (i >= 0 && i < currentMove.childCount()) {
                     currentMove.removeChildMove(i);
                     System.out.println("Move removed\n");
                     return;
@@ -131,7 +131,7 @@ public class OpeningApp {
     // MODIFIES: this
     // EFFECTS: references currentMove to a child move specified from input
     private void viewMove() {
-        if (currentMove.length() == 0) {
+        if (currentMove.childCount() == 0) {
             System.out.println("There are no moves to be viewed\n");
             return;
         }
@@ -141,7 +141,7 @@ public class OpeningApp {
             String input = scan.next();
             try {
                 int i = Integer.parseInt(input) - 1;
-                if (i >= 0 && i < currentMove.length()) {
+                if (i >= 0 && i < currentMove.childCount()) {
                     Move temp = currentMove.getChildMove(i);
                     String piece = toNotation[Math.abs(temp.getPiece()) - 1] + (temp.isCaptures() ? "x" : "");
                     System.out.println("Selected " + piece + temp.getEnd().toChessNotation());
@@ -216,7 +216,7 @@ public class OpeningApp {
         System.out.println((currentMove.isWhite() ? "black" : "white") + " to move:");
         printBoard(currentMove.getBoard());
 
-        if (currentMove.length() == 0) {
+        if (currentMove.childCount() == 0) {
             System.out.println("There are no moves in this line\n");
         } else {
             displayMoveList();
@@ -227,7 +227,7 @@ public class OpeningApp {
     // EFFECT: displays list of next moves with indexes
     public void displayMoveList() {
         System.out.print("Next moves are:\n\t");
-        for (int i = 0; i < currentMove.length(); i++) {
+        for (int i = 0; i < currentMove.childCount(); i++) {
             Move temp = currentMove.getChildMove(i);
             String index = "(" + (i + 1) + ") ";
             String piece = toNotation[Math.abs(temp.getPiece()) - 1];
@@ -237,7 +237,7 @@ public class OpeningApp {
                 startFile = String.valueOf(temp.getStart().toChessNotation().charAt(0));
             }
             System.out.print(index + piece + startFile + cap + temp.getEnd().toChessNotation());
-            if (i != currentMove.length() - 1) {
+            if (i != currentMove.childCount() - 1) {
                 System.out.print(", ");
             }
         }
