@@ -57,6 +57,13 @@ public class BoardTest {
         Board res = test.move(new Position(2, 2), new Position(3, 4), 0, 0);
         assertEquals(E, res.get(2, 2));
         assertEquals(-N, res.get(3, 4));
+
+        Board res2 = test.move(new Position(7, 4), new Position(7, 5), 0, 0);
+        Board res3 = test.move(new Position(0, 0), new Position(0, 1), 0, 0);
+        Board res4 = test.move(new Position(7, 7), new Position(6, 7), 0, 0);
+        assertTrue(res2.getMoved(0));
+        assertTrue(res3.getMoved(4));
+        assertTrue(res4.getMoved(3));
     }
 
     @Test

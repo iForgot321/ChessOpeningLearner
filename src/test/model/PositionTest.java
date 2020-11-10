@@ -25,12 +25,17 @@ public class PositionTest {
         Position pos2 = new Position(pos);
         Position pos3 = new Position(3,5);
         Position pos4 = new Position(4,3);
-        Position pos5 = null;
 
-        assertTrue(pos.equals(pos2));
-        assertFalse(pos.equals(pos3));
-        assertFalse(pos.equals(pos4));
-        assertFalse(pos.equals(pos5));
+        assertEquals(pos, pos);
+        assertEquals(pos2, pos);
+        assertNotEquals(pos3, pos);
+        assertNotEquals(pos4, pos);
+        assertNotEquals(pos, null);
+    }
+
+    @Test
+    void testHashCode() {
+        assertEquals(1120, pos.hashCode());
     }
 
     @Test
@@ -40,14 +45,14 @@ public class PositionTest {
 
     @Test
     void testNotationToPosition() {
-        assertTrue(pos.equals(Position.notationToPosition("f4")));
-        assertFalse(pos.equals(Position.notationToPosition("f45")));
-        assertFalse(pos.equals(Position.notationToPosition("fg")));
-        assertFalse(pos.equals(Position.notationToPosition("k4")));
-        assertFalse(pos.equals(Position.notationToPosition("f9")));
-        assertFalse(pos.equals(Position.notationToPosition("A4")));
-        assertFalse(pos.equals(Position.notationToPosition("f0")));
-        assertFalse(pos.equals(Position.notationToPosition("f5")));
+        assertEquals(Position.notationToPosition("f4"), pos);
+        assertNotEquals(Position.notationToPosition("f45"), pos);
+        assertNotEquals(Position.notationToPosition("fg"), pos);
+        assertNotEquals(Position.notationToPosition("k4"), pos);
+        assertNotEquals(Position.notationToPosition("f9"), pos);
+        assertNotEquals(Position.notationToPosition("A4"), pos);
+        assertNotEquals(Position.notationToPosition("f0"), pos);
+        assertNotEquals(Position.notationToPosition("f5"), pos);
     }
 
     @Test

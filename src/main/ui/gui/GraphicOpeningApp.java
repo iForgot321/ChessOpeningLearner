@@ -194,7 +194,7 @@ public class GraphicOpeningApp extends JFrame implements ActionListener, WindowL
     }
 
     // MODIFIES: p
-    // EFFECTS: creates and initializes actionlisteners for all buttons, then adds to panel
+    // EFFECTS: creates and initializes ActionListeners for all buttons, then adds to panel
     private void createButtons(JPanel p) {
         JButton firstMove = new JButton("<<<");
         JButton prevMove = new JButton("<");

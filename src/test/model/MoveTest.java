@@ -6,6 +6,7 @@ import model.board.Board;
 import static model.board.Board.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -98,6 +99,10 @@ public class MoveTest {
         test.addChildMove(test2);
         test.removeChildMove(0);
         assertEquals(0, test.childCount());
+
+        test.addChildMove(test2);
+        test.removeChildMove(test2);
+        assertEquals(0, test.childCount());
     }
 
     @Test
@@ -112,6 +117,15 @@ public class MoveTest {
         assertEquals(0, test.getIndexOfChild(test2));
         assertEquals(1, test.getIndexOfChild(test3));
         assertEquals(-1, test.getIndexOfChild(test4));
+    }
+
+    @Test
+    void testGetIndexOfChildFromPos() {
+        test.addChildMove(test2);
+        test.addChildMove(test3);
+        assertEquals(0, test.getIndexOfChild(test2.getStart(), test2.getEnd()));
+        assertEquals(1, test.getIndexOfChild(test3.getStart(), test3.getEnd()));
+        assertEquals(-1, test.getIndexOfChild(test4.getStart(), test4.getEnd()));
     }
 
     @Test
@@ -206,6 +220,27 @@ public class MoveTest {
     }
 
     @Test
+    void testHashCode() {
+        assertEquals(925573633, test.hashCode());
+    }
+
+    @Test
+    void testNoPieceAtStartPos() {
+        int[][] board = {{-R, -N, -B, -Q, -K, -B, -N, -R},
+                {-P, -P, -P, -P, -P, -P, -P, -P},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {P, P, P, P, P, P, P, P},
+                {R, N, B, Q, K, B, N, R}};
+        boolean[] moved = new boolean[6];
+        Board b = new Board(moved, board);
+        Move m = new Move(0, 0, false, false, new Position(5, 5), new Position(5, 6), null, b);
+        assertEquals(-1, m.isLegal());
+    }
+
+    @Test
     void testPawnIsLegal() {
         int[][] board = {{-R, -N, -B, -Q, -K, -B, -N, -R},
                 {-P, -P, -P, -P, -P, -P, E, -P},
@@ -222,12 +257,14 @@ public class MoveTest {
         Move m4 = new Move(1, P, false, false, new Position(5, 1), new Position(3, 1), null, b);
         Move m5 = new Move(1, -P, false, false, new Position(5, 6), new Position(6, 6), null, b);
         Move m6 = new Move(1, -P, false, false, new Position(1, 4), new Position(3, 4), null, b);
+        Move m7 = new Move(1, -P, false, false, new Position(1, 4), new Position(4, 4), null, b);
         assertEquals(0, m.isLegal());
         assertEquals(0, m2.isLegal());
         assertEquals(0, m3.isLegal());
         assertEquals(-1, m4.isLegal());
         assertEquals(-1, m5.isLegal());
         assertEquals(0, m6.isLegal());
+        assertEquals(-1, m7.isLegal());
     }
 
     @Test
@@ -434,11 +471,22 @@ public class MoveTest {
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, E, E, E, E, E},
                 {E, E, E, R, K, E, E, R}};
+        int[][] board2 = {{-R, E, E, E, -R, -K, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, R, K, E, E, R}};
         Board b = new Board(new boolean[6], board);
+        Board b2 = new Board(new boolean[6], board2);
         Move m = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b);
         Move m2 = new Move(1, -K, false, false, new Position(0, 4), new Position(0, 2), null, b);
+        Move m3 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), null, b2);
         assertEquals(-1, m.isLegal());
         assertEquals(-1, m2.isLegal());
+        assertEquals(-1, m3.isLegal());
     }
 
     @Test
@@ -460,9 +508,26 @@ public class MoveTest {
 
     @Test
     void testToChessNotation() {
+        int[][] board = {{-R, E, E, E, -K, -B, E, -R},
+                {-P, -P, -P, -P, -P, -P, -P, -P},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {E, E, E, P, P, E, E, E},
+                {E, E, E, E, E, E, E, E},
+                {P, P, P, E, E, P, P, E},
+                {R, E, E, E, K, E, E, R}};
+        Board b = new Board(new boolean[6], board);
+        Move m = new Move(1, K, false, false, new Position(7, 4), new Position(7, 6), test, b);
+        Move m2 = new Move(1, K, false, false, new Position(7, 4), new Position(7, 2), test, b);
+
         assertEquals("e4", test2.toChessNotation());
         assertEquals("Nf3", test4.toChessNotation());
         assertEquals("Opening List", test.toChessNotation());
+        assertEquals("0-0", m.toChessNotation());
+        assertEquals("0-0-0", m2.toChessNotation());
+
+        assertEquals("e4", test2.toString());
+        assertEquals("Nf3", test4.toString());
     }
 
     @Test
@@ -516,7 +581,19 @@ public class MoveTest {
     }
 
     @Test
+    void testGetPath() {
+        Object[] objArray = test.getPath();
+        Object[] objArray2 = test4.getPath();
+        assertEquals(objArray, null);
+        assertEquals(2, objArray2.length);
+        assertEquals(test, objArray2[0]);
+        assertEquals(test4, objArray2[1]);
+    }
+
+    @Test
     void testToJson() {
+        test.addChildMove(test2);
+        test.addChildMove(test3);
         JSONObject json = test.toJson();
 
         assertEquals(test.getMoveNum(), json.getInt("moveNum"));
