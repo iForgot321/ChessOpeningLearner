@@ -82,6 +82,12 @@ public class Move implements Writable {
         childMoves.remove(m);
     }
 
+    // MODIFIES: this
+    // EFFECTS: removes all child moves from list
+    public void removeAllMoves() {
+        childMoves.clear();
+    }
+
     // EFFECTS: returns number of moves in list of children moves
     public int childCount() {
         return childMoves.size();

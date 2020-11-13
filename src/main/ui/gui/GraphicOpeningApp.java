@@ -387,10 +387,12 @@ public class GraphicOpeningApp extends JFrame implements ActionListener, WindowL
             Move removedMove = currentMove;
             currentMove = currentMove.getParentMove();
             currentMove.removeChildMove(removedMove);
-            requiresSave = true;
-            tree.updateUI();
-            openMovePath();
+        } else {
+            currentMove.removeAllMoves();
         }
+        requiresSave = true;
+        tree.updateUI();
+        openMovePath();
     }
 
     // MODIFIES: this

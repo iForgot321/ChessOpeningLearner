@@ -106,6 +106,15 @@ public class MoveTest {
     }
 
     @Test
+    void testRemoveAllMoves() {
+        test.addChildMove(test2);
+        test.addChildMove(test3);
+        test.addChildMove(test4);
+        test.removeAllMoves();
+        assertEquals(0, test.childCount());
+    }
+
+    @Test
     void testLength() {
         assertEquals(0, test.childCount());
     }
