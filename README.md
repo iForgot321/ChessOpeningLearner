@@ -13,3 +13,6 @@ As a user, I want to be able to
  - export and import openings via PGN 
  - save current opening list to disk
  - load opening list that was previously saved
+### Phase 4: Task 2
+I have chosen to select the bi-directional association implementation for this task, which is based solely on Move. 
+Move contains a list of children moves, and a parent move as well. 
