@@ -14,5 +14,9 @@ As a user, I want to be able to
  - save current opening list to disk
  - load opening list that was previously saved
 ### Phase 4: Task 2
-I have chosen to select the bi-directional association implementation for this task, which is based solely on Move. 
-Move contains a list of children moves, and a parent move as well. 
+I have chosen to select the bi-directional association implementation for this task, which is reflexive as it is based solely on Move. 
+Move contains a list of children moves, and a parent move as well.
+### Phase 4: Task 3
+ - I would have made it more save friendly, and implemented an alternative method to fir the data into JSON format
+ - Some variables do not need to be included in the constructor, and can be implicitly instantiated
+ - Some functions in Board and Move could be instead put into a utility class. 
