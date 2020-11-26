@@ -1,5 +1,6 @@
 package model.board;
 
+import exceptions.NotPieceException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import persistence.Writable;
@@ -157,7 +158,7 @@ public class Board implements Writable {
     }
 
     // EFFECTS: coverts string into the corresponding piece value, else returns -1
-    public static int stringToPiece(String s) {
+    public static int stringToPiece(String s) throws NotPieceException {
         switch (s) {
             case "":
                 return P;
@@ -172,7 +173,7 @@ public class Board implements Writable {
             case "K":
                 return K;
             default:
-                return -1;
+                throw new NotPieceException();
         }
     }
 

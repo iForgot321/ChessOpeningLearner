@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.NotPieceException;
 import javafx.geometry.Pos;
 import model.board.Position;
 import model.board.Board;
@@ -143,14 +144,27 @@ public class BoardTest {
     }
 
     @Test
-    void testStringToPiece() {
-        assertEquals(P, stringToPiece(""));
-        assertEquals(N, stringToPiece("N"));
-        assertEquals(B, stringToPiece("B"));
-        assertEquals(R, stringToPiece("R"));
-        assertEquals(Q, stringToPiece("Q"));
-        assertEquals(K, stringToPiece("K"));
-        assertEquals(-1, stringToPiece("T"));
+    void testValidStringToPiece() {
+        try {
+            assertEquals(P, stringToPiece(""));
+            assertEquals(N, stringToPiece("N"));
+            assertEquals(B, stringToPiece("B"));
+            assertEquals(R, stringToPiece("R"));
+            assertEquals(Q, stringToPiece("Q"));
+            assertEquals(K, stringToPiece("K"));
+        } catch (NotPieceException e) {
+            fail("Exception should not be caught");
+        }
+    }
+
+    @Test
+    void testInvalidStringToPiece() {
+        try {
+            stringToPiece("T");
+            fail("Exception should be caught");
+        } catch (NotPieceException e) {
+            // success
+        }
     }
 
     @Test
