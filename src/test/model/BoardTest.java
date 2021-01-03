@@ -1,7 +1,6 @@
 package model;
 
 import exceptions.NotPieceException;
-import javafx.geometry.Pos;
 import model.board.Position;
 import model.board.Board;
 import static model.board.Board.*;
